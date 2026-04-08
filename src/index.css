@@ -4,47 +4,47 @@
 @layer base {
   :root {
     font-family: Inter, sans-serif;
-    color: #4a5568;
+    color: #e2e8f0;
   }
 
   body {
     margin: 0;
-    /* The specific soft pastel gradient from the image */
-    background: radial-gradient(circle at top left, #f4f9f3 0%, #eef3e6 40%, #e0ebd9 100%);
+    /* Geek style dark background */
+    background: radial-gradient(circle at top left, #1f2937 0%, #111827 40%, #030712 100%);
     min-height: 100vh;
   }
 }
 
 @layer components {
-  /* The core glassmorphism card style */
+  /* Added transition and hover:scale to make components pop when hovered */
   .glass-card {
-    @apply bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem];
+    @apply bg-black/50 backdrop-blur-md border border-green-500/20 shadow-[0_8px_30px_rgb(0,0,0,0.5)] rounded-[2rem] transition-transform duration-300 hover:scale-105;
   }
 
   /* Left sidebar menu items */
   .menu-item {
-    @apply flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium text-[#7b888e] transition-all hover:bg-white/40;
+    @apply flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium text-gray-400 transition-all hover:bg-white/10;
   }
 
   .menu-item.active {
-    @apply bg-white text-gray-800 shadow-sm border border-white/80;
+    @apply bg-black text-green-400 shadow-sm border border-green-500/50;
   }
 
-  /* Social chips */
+  /* Social chips - updated hover scale to be slightly more prominent */
   .social-chip {
-    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-white/60 border border-white/80 shadow-sm backdrop-blur-sm transition-transform hover:scale-105;
+    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-black/60 border border-green-500/30 text-gray-300 shadow-sm backdrop-blur-sm transition-transform duration-300 hover:scale-110;
   }
 
   .social-chip.dark {
-    @apply bg-[#1a1a1a] text-white border-transparent;
+    @apply bg-white text-black border-transparent;
   }
 
   /* Calendar Days */
   .cal-day {
-    @apply h-8 w-8 flex items-center justify-center text-sm text-[#7b888e] rounded-full;
+    @apply h-8 w-8 flex items-center justify-center text-sm text-gray-400 rounded-full transition-colors;
   }
   
   .cal-day.active {
-    @apply bg-[#35bfab] text-white shadow-[0_4px_12px_rgba(53,191,171,0.4)];
+    @apply bg-green-500 text-black font-bold shadow-[0_4px_12px_rgba(34,197,94,0.4)];
   }
 }

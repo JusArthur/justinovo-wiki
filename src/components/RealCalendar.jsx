@@ -13,13 +13,13 @@ const RealCalendar = () => {
     const days = Array(padDays).fill(null).concat(Array.from({length: daysInMonth}, (_, i) => i + 1));
   
     return (
-      <article className="glass-card p-6 w-full mt-2">
-        <p className="mb-4 text-xs font-semibold text-gray-400">
+      <article className="glass-card p-6 w-full mt-2 border border-green-500/20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+        <p className="mb-4 text-xs font-semibold text-gray-500">
           {currentYear}/{currentMonth + 1}/{currentDate}
         </p>
         <div className="grid grid-cols-7 gap-y-2 text-center mb-2">
           {['一', '二', '三', '四', '五', '六', '日'].map((day, i) => (
-            <span key={day} className={`text-xs font-medium ${(today.getDay() === (i+1)%7) ? 'text-[#35bfab]' : 'text-gray-400'}`}>
+            <span key={day} className={`text-xs font-medium ${(today.getDay() === (i+1)%7) ? 'text-green-500 drop-shadow-[0_0_5px_rgba(34,197,94,0.8)]' : 'text-gray-500'}`}>
               {day}
             </span>
           ))}

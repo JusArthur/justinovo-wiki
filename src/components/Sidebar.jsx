@@ -1,12 +1,8 @@
 import { useState } from 'react';
 
-// ==========================================
-// 1. Sidebar Component (Smooth Animated Pill)
-// ==========================================
 const Sidebar = () => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  // Exact SVGs extracted and converted to React JSX (camelCase attributes)
   const navItems = [
     { 
       label: '近期文章', 
@@ -58,61 +54,53 @@ const Sidebar = () => {
 
   return (
     <aside className="glass-card p-6 w-[280px] rounded-3xl">
-      {/* Header / Avatar Profile */}
       <section className="mb-6 flex items-center gap-3">
         <img 
           src="/assets/avatar.jpg"
           alt="avatar" 
           width={40} 
           height={40} 
-          className="rounded-full object-cover bg-gray-200"
-          style={{ boxShadow: 'rgb(226, 217, 206) 0px 12px 20px -5px' }}
+          className="rounded-full object-cover bg-gray-800 border border-green-500/50"
+          style={{ boxShadow: 'rgba(34, 197, 94, 0.3) 0px 12px 20px -5px' }}
         />
         <div>
-          <h2 className="font-medium font-averia text-2xl text-gray-800 leading-none flex items-center gap-2">
-            lvy-neko
+          <h2 className="font-medium font-averia text-2xl text-gray-100 leading-none flex items-center gap-2">
+            Justin-Yagami
           </h2>
-          <span className="text-brand mt-1 inline-block text-xs font-medium text-[#35bfab]">
+          <span className="text-brand mt-1 inline-block text-xs font-medium text-green-500 drop-shadow-[0_0_5px_rgba(34,197,94,0.6)]">
             (开发中)
           </span>
         </div>
       </section>
 
-      {/* Section Title */}
-      <div className="text-secondary mt-6 mb-2 text-sm uppercase text-gray-400">
+      <div className="text-secondary mt-6 mb-2 text-sm uppercase text-gray-500">
         General
       </div>
       
-      {/* Navigation List */}
       <nav 
         className="relative flex flex-col space-y-2"
         onMouseLeave={() => setHoveredIndex(null)}
       >
-        {/* Animated Background Pill */}
-        {/* Swapped 1000ms for 300ms for responsiveness, and added the exact linear-gradient from your HTML */}
         <div 
-          className={`absolute left-0 w-full rounded-full border border-gray-200 pointer-events-none transition-all duration-300 ease-out shadow-sm ${hoveredIndex !== null ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute left-0 w-full rounded-full border border-green-500/20 pointer-events-none transition-all duration-300 ease-out shadow-[0_0_15px_rgba(34,197,94,0.1)] ${hoveredIndex !== null ? 'opacity-100' : 'opacity-0'}`}
           style={{ 
             height: '52px',
-            transform: `translateY(${hoveredIndex !== null ? hoveredIndex * (52 + 8) : 0}px)`, // 52px height + 8px space-y-2 gap
-            backgroundImage: 'linear-gradient(to right bottom, #f3f4f6 60%, #ffffff 100%)' // Approximating your var(--color-border) and var(--color-card)
+            transform: `translateY(${hoveredIndex !== null ? hoveredIndex * (52 + 8) : 0}px)`,
+            backgroundImage: 'linear-gradient(to right bottom, rgba(34,197,94,0.15) 0%, rgba(0,0,0,0) 100%)'
           }}
         />
 
-        {/* Links */}
         {navItems.map((item, i) => (
           <a 
             key={i} 
             href="#" 
-            className="group relative z-10 flex items-center gap-3 px-5 py-3 h-[52px] rounded-full text-[15px] text-gray-500 transition-colors"
+            className="group relative z-10 flex items-center gap-3 px-5 py-3 h-[52px] rounded-full text-[15px] text-gray-400 transition-colors"
             onMouseEnter={() => setHoveredIndex(i)}
           >
-            {/* The icon changes to your brand color (#35bfab) when hovered */}
-            <div className={`flex h-7 w-7 items-center justify-center transition-colors duration-300 ${hoveredIndex === i ? 'text-[#35bfab]' : 'text-gray-400'}`}>
+            <div className={`flex h-7 w-7 items-center justify-center transition-colors duration-300 ${hoveredIndex === i ? 'text-green-500 drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]' : 'text-gray-500'}`}>
               {item.icon}
             </div>
-            {/* Text becomes darker/prominent when hovered */}
-            <span className={`font-medium transition-colors duration-300 ${hoveredIndex === i ? 'text-gray-900' : ''}`}>
+            <span className={`font-medium transition-colors duration-300 tracking-wide ${hoveredIndex === i ? 'text-white' : ''}`}>
               {item.label}
             </span>
           </a>
