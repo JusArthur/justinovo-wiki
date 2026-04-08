@@ -34,12 +34,14 @@ function App() {
       <div className="w-[400px] min-w-[400px] flex flex-col items-center relative z-20">
         
         {/* Top Photo Collage */}
-        <div className="glass-card w-90 h-[180px] relative overflow-hidden flex justify-center items-center bg-white/30 border-white">
-          <img
-            className="absolute inset-0 h-full w-full object-cover"
-            src="/assets/album.png"
-            alt="Photo collage"
-          />
+        <div className="glass-card w-90 h-[190px] p-3 bg-white/30 border-white">
+
+            <img
+              className="h-full w-full rounded-xl object-cover"
+              src="/assets/album.png"
+              alt="Photo collage"
+            />
+
         </div>
 
         {/* Good Afternoon Box */}
@@ -104,7 +106,7 @@ function App() {
       </div>
 
       {/* ---------------- RIGHT COLUMN ---------------- */}
-      <div className="w-[350px] min-w-[350px] flex flex-col gap-4 z-10">
+      <div className="w-[350px] min-w-[350px] flex flex-col gap-4 z-10 mb-20">
         
         <div className="flex justify-start gap-3 mb-2">
           <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] text-white text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] hover:bg-[#2da896] transition-colors">

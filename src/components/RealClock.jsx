@@ -12,7 +12,7 @@ const RealClock = () => {
   
     return (
       // w-[60%] ensures it is exactly 3/5 the width of its container (the right column)
-      <div className="glass-card py-5 flex justify-center items-center w-[60%]">
+      <div className="glass-card py-5 flex justify-center items-center w-[60%] h-30">
         <span className="text-4xl font-mono text-gray-600 tracking-[0.15em] font-semibold opacity-80">
           {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
         </span>
