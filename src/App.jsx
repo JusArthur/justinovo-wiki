@@ -8,11 +8,11 @@ import RealCalendar from './components/RealCalendar';
 // ==========================================
 function App() {
   return (
-    // Changed justify-between to justify-center, and gap-8 to gap-6 to bring columns much closer together
-    <main className="max-w-[1100px] mx-auto min-h-screen p-8 flex flex-wrap justify-center items-center gap-6 relative">
+    // Keep a fixed three-column row; use horizontal scroll on narrow screens to preserve layout.
+    <main className="max-w-[1100px] mx-auto min-h-screen p-8 flex flex-nowrap justify-center items-center gap-6 relative overflow-x-auto">
       
       {/* ---------------- LEFT COLUMN ---------------- */}
-      <div className="w-[260px] flex flex-col gap-6 mt-12 z-10">
+      <div className="w-[260px] min-w-[260px] flex flex-col gap-6 z-10">
         <Sidebar />
         
         <article className="glass-card p-5 w-[270px] transform -rotate-1 -ml-[8px]">
@@ -31,19 +31,19 @@ function App() {
       </div>
 
       {/* ---------------- CENTER COLUMN ---------------- */}
-      <div className="w-[420px] flex flex-col items-center relative z-20">
+      <div className="w-[400px] min-w-[400px] flex flex-col items-center relative z-20">
         
         {/* Top Photo Collage */}
-        <div className="glass-card w-full h-[160px] relative overflow-hidden flex justify-center items-center bg-white/30 border-white">
-           <div className="absolute w-[90%] h-[90%] flex gap-2 rotate-2 opacity-80 p-2">
-              <div className="flex-1 bg-blue-100 rounded-lg shadow border border-white"></div>
-              <div className="flex-1 bg-yellow-100 rounded-lg shadow border border-white mt-4"></div>
-              <div className="flex-1 bg-green-100 rounded-lg shadow border border-white -mt-2"></div>
-           </div>
+        <div className="glass-card w-90 h-[180px] relative overflow-hidden flex justify-center items-center bg-white/30 border-white">
+          <img
+            className="absolute inset-0 h-full w-full object-cover"
+            src="/assets/album.png"
+            alt="Photo collage"
+          />
         </div>
 
         {/* Good Afternoon Box */}
-        <article className="glass-card p-10 w-full flex flex-col items-center text-center mt-6">
+        <article className="glass-card p-10 w-90 flex flex-col items-center text-center mt-6">
           <div className="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center text-4xl mb-4 shadow-sm border border-white">
             🐱
           </div>
@@ -85,7 +85,7 @@ function App() {
             <article className="glass-card p-2 pr-4 w-[250px] rounded-full flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/50 flex items-center justify-center text-[#35bfab] shrink-0">🎵</div>
               <div className="flex-1">
-                <p className="text-xs font-medium text-gray-600 mb-1">Close To You</p>
+                <p className="text-xs font-medium text-gray-600 mb-1">Next To You</p>
                 <div className="h-1.5 w-full bg-white/60 rounded-full overflow-hidden">
                   <div className="h-full bg-white w-1/3 rounded-full"></div>
                 </div>
@@ -104,14 +104,11 @@ function App() {
       </div>
 
       {/* ---------------- RIGHT COLUMN ---------------- */}
-      <div className="w-[300px] flex flex-col gap-4 mt-[42px] z-10 mb-30">
+      <div className="w-[350px] min-w-[350px] flex flex-col gap-4 z-10">
         
         <div className="flex justify-start gap-3 mb-2">
           <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] text-white text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] hover:bg-[#2da896] transition-colors">
             <span>✍️</span> 写文章
-          </button>
-          <button className="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 bg-white/40 hover:bg-white/60 border border-white transition-colors">
-            ⊞
           </button>
         </div>
 

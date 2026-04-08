@@ -16,7 +16,7 @@ const Sidebar = () => {
     ];
   
     return (
-      <aside className="glass-card p-6 w-[260px]">
+      <aside className="glass-card p-6 w-[240px]">
         <section className="mb-6 flex items-center gap-3">
           <div className="h-10 w-10 bg-yellow-100 rounded-full flex items-center justify-center text-xl shadow-sm">🐱</div>
           <div>
