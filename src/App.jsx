@@ -69,7 +69,7 @@ const RealClock = () => {
 
   return (
     // w-[60%] ensures it is exactly 3/5 the width of its container (the right column)
-    <div className="glass-card py-5 flex justify-center items-center w-[60%] ml-auto">
+    <div className="glass-card py-5 flex justify-center items-center w-[60%]">
       <span className="text-4xl font-mono text-gray-600 tracking-[0.15em] font-semibold opacity-80">
         {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}
       </span>
@@ -178,7 +178,7 @@ function App() {
 
         {/* Bottom Section: Stable container mapping exactly to the design */}
         {/* Width expanded and pulled slightly left to naturally fit both items */}
-        <div className="mt-8 flex justify-between items-start w-[520px] -ml-[40px] relative z-30">
+        <div className="mt-8 flex justify-between items-start w-[520px] ml-18 relative z-30">
           
           {/* Random Rec Card - Firmly planted on the Left */}
           <article className="glass-card p-5 w-[240px] shadow-sm">
@@ -193,7 +193,7 @@ function App() {
           </article>
 
           {/* Music Player & Like - Firmly planted on the Right */}
-          <div className="flex flex-col items-start gap-3 mt-2">
+          <div className="flex flex-col items-start gap-3 mt-2 pl-10">
             <article className="glass-card p-2 pr-4 w-[250px] rounded-full flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/50 flex items-center justify-center text-[#35bfab] shrink-0">🎵</div>
               <div className="flex-1">
@@ -216,9 +216,9 @@ function App() {
       </div>
 
       {/* ---------------- RIGHT COLUMN ---------------- */}
-      <div className="w-[300px] flex flex-col gap-4 mt-8 z-10">
+      <div className="w-[300px] flex flex-col gap-4 mt-[42px] z-10">
         
-        <div className="flex justify-end gap-3 mb-2">
+        <div className="flex justify-start gap-3 mb-2">
           <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] text-white text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] hover:bg-[#2da896] transition-colors">
             <span>✍️</span> 写文章
           </button>
