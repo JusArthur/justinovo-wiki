@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Varela+Round&family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
-/* Allow manual toggling of the dark variant via the 'dark' class on <html> */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
@@ -12,28 +11,34 @@
 
   body {
     margin: 0;
-    /* Light Mode: Soft pastel gradient */
     background: radial-gradient(circle at top left, #f4f9f3 0%, #eef3e6 40%, #e0ebd9 100%);
     min-height: 100vh;
     transition: background 0.3s ease, color 0.3s ease;
   }
 
   .dark body {
-    /* Dark Mode: Geek Style Black Gradient */
     background: radial-gradient(circle at top left, #111111 0%, #080808 40%, #000000 100%);
-    color: #39ff14; /* Neon green text as default in dark mode */
+    color: #39ff14; 
   }
 }
 
 @layer components {
-  /* The core glassmorphism card style */
+  /* Core glassmorphism card style (base transition added) */
   .glass-card {
-    @apply bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem] transition-colors duration-300;
+    @apply bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem] transition-all duration-300;
   }
 
-  /* Dark mode specific glass card overrides */
   .dark .glass-card {
     @apply bg-black/50 border border-[#39ff14]/30 shadow-[0_8px_30px_rgba(57,255,20,0.1)] text-[#e5e7eb];
+  }
+
+  /* Strategic Hover Pop for Interactive Widgets */
+  .hover-pop {
+    @apply hover:scale-105 hover:z-50 hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)] cursor-pointer;
+  }
+
+  .dark .hover-pop {
+    @apply hover:shadow-[0_15px_40px_rgba(57,255,20,0.25)];
   }
 
   /* Left sidebar menu items */
@@ -45,9 +50,9 @@
     @apply bg-white text-gray-800 shadow-sm border border-white/80;
   }
 
-  /* Social chips */
+  /* Social chips - updated from scale-105 to scale-110 with z-index */
   .social-chip {
-    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-white/60 border border-white/80 shadow-sm backdrop-blur-sm transition-transform hover:scale-105;
+    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-white/60 border border-white/80 shadow-sm backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:z-50;
   }
 
   .dark .social-chip {

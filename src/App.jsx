@@ -8,11 +8,8 @@ function App() {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [visibleStep, setVisibleStep] = useState(0);
-  const [likePosition, setLikePosition] = useState({ x: 16, y: 14 });
-  const [dragState, setDragState] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(false); // Theme state
+  const [isDarkMode, setIsDarkMode] = useState(false); 
 
-  // Apply dark mode to document 
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -33,27 +30,6 @@ function App() {
     }, 110);
     return () => clearInterval(stepTimer);
   }, []);
-
-  useEffect(() => {
-    if (!dragState) return;
-
-    const handleMouseMove = (event) => {
-      setLikePosition({
-        x: Math.max(0, dragState.startX + (event.clientX - dragState.pointerX)),
-        y: Math.max(0, dragState.startY + (event.clientY - dragState.pointerY)),
-      });
-    };
-
-    const handleMouseUp = () => setDragState(null);
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [dragState]);
 
   const getRevealClass = (step, direction = 'up') => {
     const hiddenOffset =
@@ -87,10 +63,12 @@ function App() {
       {/* ---------------- LEFT COLUMN ---------------- */}
       <div className="w-[260px] min-w-[260px] flex flex-col gap-6 z-10">
         <div className={getRevealClass(1, 'left')}>
+          {/* Sidebar is an anchor component, it stays stable */}
           <Sidebar />
         </div>
         
-        <article className={`glass-card p-5 w-[270px] transform -rotate-1 -ml-[8px] ${getRevealClass(8, 'left')}`}>
+        {/* Added hover-pop */}
+        <article className={`glass-card hover-pop p-5 w-[270px] transform -rotate-1 -ml-[8px] ${getRevealClass(8, 'left')}`}>
           <h4 className="mb-3 text-xs font-semibold text-gray-400 dark:text-[#39ff14]/80 tracking-wider">最新文章</h4>
           <div className="flex gap-3 items-center">
             <div className="h-12 w-12 rounded-xl bg-gray-200 dark:bg-gray-800 overflow-hidden shrink-0">
@@ -106,9 +84,10 @@ function App() {
       </div>
 
       {/* ---------------- CENTER COLUMN ---------------- */}
-      <div className="w-[400px] min-w-[400px] flex flex-col items-center relative z-20">
+      <div className="w-[400px] min-w-[400px] flex flex-col items-center relative z-20 mt-10">
         
-        <div className={`glass-card w-90 h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 mb-10 ${getRevealClass(2, 'up')}`}>
+        {/* Added hover-pop */}
+        <div className={`glass-card hover-pop w-90 h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 mb-10 ${getRevealClass(2, 'up')}`}>
             <img
               className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
               src="/assets/album.png"
@@ -116,20 +95,22 @@ function App() {
             />
         </div>
 
+        {/* GreetingBox is an anchor component, it stays stable */}
         <GreetingBox />
 
         <div className={`flex justify-center gap-3 mt-6 ${getRevealClass(7, 'up')}`}>
           <a className="social-chip dark" href="#"><span>🐙</span> Github</a>
           <a className="social-chip" href="#"><span className="text-pink-400 dark:text-[#39ff14]">📺</span> Bilibili</a>
           <a className="social-chip" href="#"><span className="text-red-500 dark:text-[#39ff14]">📕</span> 小红书</a>
-          <a className="w-10 h-10 rounded-xl bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] hover:scale-105 transition-transform" href="#">
+          <a className="w-10 h-10 rounded-xl bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] transition-all duration-300 hover:scale-110 hover:z-50" href="#">
             ✉️
           </a>
         </div>
 
         <div className="mt-8 flex justify-between items-start w-[520px] ml-30 relative z-30">
           
-          <article className={`glass-card p-5 w-[240px] shadow-sm ${getRevealClass(6, 'left')}`}>
+          {/* Added hover-pop */}
+          <article className={`glass-card hover-pop p-5 w-[240px] shadow-sm ${getRevealClass(6, 'left')}`}>
             <h4 className="mb-3 text-xs font-semibold text-gray-400 dark:text-[#39ff14]/80 tracking-wider">随机推荐</h4>
             <div className="flex gap-3 items-center">
               <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-[#39ff14]/20 flex items-center justify-center text-xl shrink-0 dark:brightness-150">📦</div>
@@ -141,7 +122,11 @@ function App() {
           </article>
 
           <div className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(5, 'right')}`}>
-            <article className="glass-card p-2 pr-4 w-[275px] rounded-full flex items-center gap-3">
+            {/* Added hover-pop to player */}
+            <article 
+              className="glass-card hover-pop p-2 pr-4 w-[275px] rounded-full flex items-center gap-3"
+              onClick={handleToggleAudio}
+            >
               <div className="w-10 h-10 rounded-full bg-white/50 dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shrink-0">🎵</div>
               <div className="flex-1">
                 <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Next To You</p>
@@ -151,7 +136,6 @@ function App() {
               </div>
               <button
                 className="w-9 h-9 rounded-full bg-white dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shadow-sm ml-1 shrink-0"
-                onClick={handleToggleAudio}
                 aria-label={isPlaying ? 'Pause music' : 'Play music'}
                 type="button"
               >
@@ -160,21 +144,11 @@ function App() {
             </article>
             <audio ref={audioRef} src="/music/next_to_you.flac" onEnded={() => setIsPlaying(false)} preload="metadata" />
 
-            <div
-              className="absolute left-0 top-full w-12 h-12 rounded-full glass-card flex items-center justify-center shadow-sm cursor-grab active:cursor-grabbing select-none"
-              style={{ transform: `translate(${likePosition.x}px, ${likePosition.y}px)` }}
-              onMouseDown={(event) =>
-                setDragState({
-                  pointerX: event.clientX,
-                  pointerY: event.clientY,
-                  startX: likePosition.x,
-                  startY: likePosition.y,
-                })
-              }
-            >
-              <span className="text-pink-400 dark:text-[#39ff14] text-xl pointer-events-none">♥</span>
-              <span className="absolute -top-2 -right-4 bg-white/80 dark:bg-black/80 backdrop-blur-md text-gray-500 dark:text-[#39ff14] text-[10px] px-1.5 py-0.5 rounded-full border border-white dark:border-[#39ff14]/40 pointer-events-none">15690</span>
-            </div>
+            {/* Static Like Button with hover-pop */}
+            <button className="mt-4 ml-6 w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative">
+              <span className="text-pink-400 dark:text-[#39ff14] text-xl">♥</span>
+              <span className="absolute -top-2 -right-4 bg-white/80 dark:bg-black/80 backdrop-blur-md text-gray-500 dark:text-[#39ff14] text-[10px] px-1.5 py-0.5 rounded-full border border-white dark:border-[#39ff14]/40">15690</span>
+            </button>
           </div>
 
         </div>
@@ -184,14 +158,13 @@ function App() {
       <div className="w-[350px] min-w-[350px] flex flex-col gap-4 z-10 mb-20">
         
         <div className={`flex justify-start gap-3 mb-2 ${getRevealClass(8, 'right')}`}>
-          <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] dark:bg-[#39ff14] text-white dark:text-black text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] dark:shadow-[0_4px_14px_rgba(57,255,20,0.4)] hover:bg-[#2da896] dark:hover:bg-[#32e612] transition-colors">
+          <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] dark:bg-[#39ff14] text-white dark:text-black text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] dark:shadow-[0_4px_14px_rgba(57,255,20,0.4)] transition-all duration-300 hover:scale-110 hover:z-50 hover:bg-[#2da896] dark:hover:bg-[#32e612] cursor-pointer">
             <span>✍️</span> 写文章
           </button>
           
-          {/* Theme Toggle Button */}
           <button 
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm text-xl hover:scale-105 transition-transform"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm text-xl transition-all duration-300 hover:scale-110 hover:z-50 cursor-pointer"
             title="Toggle Theme"
           >
             {isDarkMode ? '💻' : '🌸'}

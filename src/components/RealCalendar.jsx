@@ -13,7 +13,8 @@ const RealCalendar = () => {
     const days = Array(padDays).fill(null).concat(Array.from({length: daysInMonth}, (_, i) => i + 1));
   
     return (
-      <article className="glass-card p-6 w-full mt-2">
+      // Added hover-pop here
+      <article className="glass-card hover-pop p-6 w-full mt-2">
         <p className="mb-4 text-xs font-semibold text-gray-400 dark:text-gray-500">
           {currentYear}/{currentMonth + 1}/{currentDate}
         </p>

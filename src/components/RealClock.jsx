@@ -43,30 +43,31 @@ const SvgDigit = ({ value }) => {
 };
 
 const RealClock = () => {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const h = String(time.getHours()).padStart(2, '0');
-  const m = String(time.getMinutes()).padStart(2, '0');
-
-  return (
-    <div className="glass-card py-5 flex justify-center items-center w-[60%] h-30 bg-[#e8eae9] dark:bg-[#0a0a0a] rounded-[2rem] border-[6px] border-[#f4f5f5] dark:border-[#1a1a1a] shadow-sm">
-      <div className="flex items-center justify-center gap-2">
-        <SvgDigit value={parseInt(h[0], 10)} />
-        <SvgDigit value={parseInt(h[1], 10)} />
-        <div className="flex flex-col justify-center gap-2 px-1">
-          <div className="bg-[#2c4c4e] dark:bg-[#39ff14] h-1.5 w-1.5 rounded-sm"></div>
-          <div className="bg-[#2c4c4e] dark:bg-[#39ff14] h-1.5 w-1.5 rounded-sm"></div>
+    const [time, setTime] = useState(new Date());
+  
+    useEffect(() => {
+      const timer = setInterval(() => setTime(new Date()), 1000);
+      return () => clearInterval(timer);
+    }, []);
+  
+    const h = String(time.getHours()).padStart(2, '0');
+    const m = String(time.getMinutes()).padStart(2, '0');
+  
+    return (
+      // Added hover-pop here
+      <div className="glass-card hover-pop py-5 flex justify-center items-center w-[60%] h-30 bg-[#e8eae9] dark:bg-[#0a0a0a] rounded-[2rem] border-[6px] border-[#f4f5f5] dark:border-[#1a1a1a] shadow-sm">
+        <div className="flex items-center justify-center gap-2">
+          <SvgDigit value={parseInt(h[0], 10)} />
+          <SvgDigit value={parseInt(h[1], 10)} />
+          <div className="flex flex-col justify-center gap-2 px-1">
+            <div className="bg-[#2c4c4e] dark:bg-[#39ff14] h-1.5 w-1.5 rounded-sm"></div>
+            <div className="bg-[#2c4c4e] dark:bg-[#39ff14] h-1.5 w-1.5 rounded-sm"></div>
+          </div>
+          <SvgDigit value={parseInt(m[0], 10)} />
+          <SvgDigit value={parseInt(m[1], 10)} />
         </div>
-        <SvgDigit value={parseInt(m[0], 10)} />
-        <SvgDigit value={parseInt(m[1], 10)} />
       </div>
-    </div>
-  );
-};
-
-export default RealClock;
+    );
+  };
+  
+  export default RealClock;
