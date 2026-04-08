@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Averia+Gruesa+Libre&family=Inter:wght@400;500&display=swap");
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    font-family: Inter, sans-serif;
+    color: #000;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: radial-gradient(circle at 20% 20%, #ffffff 0%, #ebebeb 45%, #dfdfdf 100%);
+  }
+}
+
+@layer components {
+  .card {
+    border: 1px solid #fff;
+    background: rgba(255, 255, 255, 0.42);
+    box-shadow: 0 40px 50px rgba(0, 0, 0, 0.05), 0 0 20px rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(4px);
+    border-radius: 40px;
+  }
+
+  .font-averia {
+    font-family: "Averia Gruesa Libre", cursive;
+  }
+
+  .font-inter {
+    font-family: Inter, sans-serif;
+  }
+
+  .menu-item {
+    height: 52px;
+    border-radius: 999px;
+    border: 1px solid #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 20px;
+    text-decoration: none;
+    color: #7b888e;
+  }
+
+  .menu-item img,
+  .chip img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .chip {
+    border-radius: 12px;
+    border: 1px solid #fff;
+    background: rgba(255, 255, 255, 0.42);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #000;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .dark-chip {
+    background: #070707;
+    color: #fff;
+    font: 400 20px/1.4 "Averia Gruesa Libre", cursive;
+  }
+
+  .day {
+    height: 27px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 14px;
+    color: #7b888e;
+  }
+}
