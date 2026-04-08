@@ -1,84 +1,50 @@
-@import url("https://fonts.googleapis.com/css2?family=Averia+Gruesa+Libre&family=Inter:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Varela+Round&family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 @layer base {
   :root {
     font-family: Inter, sans-serif;
-    color: #000;
-  }
-
-  * {
-    box-sizing: border-box;
+    color: #4a5568;
   }
 
   body {
     margin: 0;
-    background: radial-gradient(circle at 20% 20%, #ffffff 0%, #ebebeb 45%, #dfdfdf 100%);
+    /* The specific soft pastel gradient from the image */
+    background: radial-gradient(circle at top left, #f4f9f3 0%, #eef3e6 40%, #e0ebd9 100%);
+    min-height: 100vh;
   }
 }
 
 @layer components {
-  .card {
-    border: 1px solid #fff;
-    background: rgba(255, 255, 255, 0.42);
-    box-shadow: 0 40px 50px rgba(0, 0, 0, 0.05), 0 0 20px rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(4px);
-    border-radius: 40px;
+  /* The core glassmorphism card style */
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[2rem];
   }
 
-  .font-averia {
-    font-family: "Averia Gruesa Libre", cursive;
-  }
-
-  .font-inter {
-    font-family: Inter, sans-serif;
-  }
-
+  /* Left sidebar menu items */
   .menu-item {
-    height: 52px;
-    border-radius: 999px;
-    border: 1px solid #fff;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0 20px;
-    text-decoration: none;
-    color: #7b888e;
+    @apply flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium text-[#7b888e] transition-all hover:bg-white/40;
   }
 
-  .menu-item img,
-  .chip img {
-    width: 24px;
-    height: 24px;
+  .menu-item.active {
+    @apply bg-white text-gray-800 shadow-sm border border-white/80;
   }
 
-  .chip {
-    border-radius: 12px;
-    border: 1px solid #fff;
-    background: rgba(255, 255, 255, 0.42);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: #000;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
+  /* Social chips */
+  .social-chip {
+    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-white/60 border border-white/80 shadow-sm backdrop-blur-sm transition-transform hover:scale-105;
   }
 
-  .dark-chip {
-    background: #070707;
-    color: #fff;
-    font: 400 20px/1.4 "Averia Gruesa Libre", cursive;
+  .social-chip.dark {
+    @apply bg-[#1a1a1a] text-white border-transparent;
   }
 
-  .day {
-    height: 27px;
-    border-radius: 8px;
-    display: grid;
-    place-items: center;
-    font-size: 14px;
-    color: #7b888e;
+  /* Calendar Days */
+  .cal-day {
+    @apply h-8 w-8 flex items-center justify-center text-sm text-[#7b888e] rounded-full;
+  }
+  
+  .cal-day.active {
+    @apply bg-[#35bfab] text-white shadow-[0_4px_12px_rgba(53,191,171,0.4)];
   }
 }
