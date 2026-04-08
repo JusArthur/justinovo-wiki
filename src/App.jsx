@@ -121,13 +121,13 @@ const RealCalendar = () => {
 function App() {
   return (
     // Changed justify-between to justify-center, and gap-8 to gap-6 to bring columns much closer together
-    <main className="max-w-[1100px] mx-auto min-h-screen p-8 pt-12 flex flex-wrap justify-center items-start gap-6 relative">
+    <main className="max-w-[1100px] mx-auto min-h-screen p-8 flex flex-wrap justify-center items-center gap-6 relative">
       
       {/* ---------------- LEFT COLUMN ---------------- */}
       <div className="w-[260px] flex flex-col gap-6 mt-12 z-10">
         <Sidebar />
         
-        <article className="glass-card p-5 w-[260px] transform -rotate-1 ml-2">
+        <article className="glass-card p-5 w-[270px] transform -rotate-1 -ml-[8px]">
           <h4 className="mb-3 text-xs font-semibold text-gray-400 tracking-wider">最新文章</h4>
           <div className="flex gap-3 items-center">
             <div className="h-12 w-12 rounded-xl bg-gray-200 overflow-hidden shrink-0">
@@ -216,7 +216,7 @@ function App() {
       </div>
 
       {/* ---------------- RIGHT COLUMN ---------------- */}
-      <div className="w-[300px] flex flex-col gap-4 mt-[42px] z-10">
+      <div className="w-[300px] flex flex-col gap-4 mt-[42px] z-10 mb-30">
         
         <div className="flex justify-start gap-3 mb-2">
           <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] text-white text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] hover:bg-[#2da896] transition-colors">
