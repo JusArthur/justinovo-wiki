@@ -27,15 +27,14 @@ const SvgDigit = ({ value }) => {
   const activeSegments = DIGIT_MAP[value] || [];
 
   return (
-    <svg width="29" height="52" viewBox="0 0 29 52" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0px 0px 4px rgba(34,197,94,0.4))' }}>
+    <svg width="29" height="52" viewBox="0 0 29 52" fill="none" xmlns="http://www.w3.org/2000/svg">
       {SEGMENT_PATHS.map((pathData, index) => {
         const isActive = activeSegments.includes(index);
         return (
           <path 
             key={index} 
             d={pathData} 
-            fill={isActive ? "#22c55e" : "rgba(255, 255, 255, 0.05)"} 
-            style={{ transition: 'fill 0.1s ease-in-out' }}
+            className={`transition-colors duration-100 ${isActive ? 'fill-[#2c4c4e] dark:fill-[#39ff14]' : 'fill-black/5 dark:fill-white/5'}`} 
           />
         );
       })}
@@ -55,16 +54,14 @@ const RealClock = () => {
   const m = String(time.getMinutes()).padStart(2, '0');
 
   return (
-    <div className="glass-card py-5 flex justify-center items-center w-[60%] h-30 bg-black/60 rounded-[2rem] border-[3px] border-green-500/20 shadow-[inset_0_0_20px_rgba(34,197,94,0.1)]">
+    <div className="glass-card py-5 flex justify-center items-center w-[60%] h-30 bg-[#e8eae9] dark:bg-[#0a0a0a] rounded-[2rem] border-[6px] border-[#f4f5f5] dark:border-[#1a1a1a] shadow-sm">
       <div className="flex items-center justify-center gap-2">
         <SvgDigit value={parseInt(h[0], 10)} />
         <SvgDigit value={parseInt(h[1], 10)} />
-
         <div className="flex flex-col justify-center gap-2 px-1">
-          <div className="bg-green-500 h-1.5 w-1.5 rounded-sm shadow-[0_0_6px_rgba(34,197,94,0.8)]"></div>
-          <div className="bg-green-500 h-1.5 w-1.5 rounded-sm shadow-[0_0_6px_rgba(34,197,94,0.8)]"></div>
+          <div className="bg-[#2c4c4e] dark:bg-[#39ff14] h-1.5 w-1.5 rounded-sm"></div>
+          <div className="bg-[#2c4c4e] dark:bg-[#39ff14] h-1.5 w-1.5 rounded-sm"></div>
         </div>
-
         <SvgDigit value={parseInt(m[0], 10)} />
         <SvgDigit value={parseInt(m[1], 10)} />
       </div>
