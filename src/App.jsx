@@ -1,12 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import RealClock from './components/RealClock';
 import RealCalendar from './components/RealCalendar';
+import GreetingBox from './components/GreetingBox';
 
 // ==========================================
 // 4. Main App (Tightly Packed & Staggered)
 // ==========================================
 function App() {
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleToggleAudio = async () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    try {
+      await audioRef.current.play();
+      setIsPlaying(true);
+    } catch {
+      setIsPlaying(false);
+    }
+  };
+
   return (
     // Keep a fixed three-column row; use horizontal scroll on narrow screens to preserve layout.
     <main className="max-w-[1100px] mx-auto min-h-screen p-8 flex flex-nowrap justify-center items-center gap-6 relative overflow-x-auto">
@@ -34,7 +55,7 @@ function App() {
       <div className="w-[400px] min-w-[400px] flex flex-col items-center relative z-20">
         
         {/* Top Photo Collage */}
-        <div className="glass-card w-90 h-[190px] p-3 bg-white/30 border-white">
+        <div className="glass-card w-90 h-[190px] p-3 bg-white/30 border-white mb-10">
 
             <img
               className="h-full w-full rounded-xl object-cover"
@@ -45,16 +66,8 @@ function App() {
         </div>
 
         {/* Good Afternoon Box */}
-        <article className="glass-card p-10 w-90 flex flex-col items-center text-center mt-6">
-          <div className="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center text-4xl mb-4 shadow-sm border border-white">
-            🐱
-          </div>
-          <h3 className="text-2xl font-semibold text-gray-700">Good Afternoon</h3>
-          <p className="text-xl text-gray-700 mt-3">
-            I'm <span className="text-[#35bfab] font-bold text-2xl">Ivy</span> , Nice to
-          </p>
-          <p className="text-xl text-gray-700 mt-1">meet you!</p>
-        </article>
+
+      <GreetingBox />
 
         {/* Social Links */}
         <div className="flex justify-center gap-3 mt-6">
@@ -92,8 +105,21 @@ function App() {
                   <div className="h-full bg-white w-1/3 rounded-full"></div>
                 </div>
               </div>
-              <button className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#35bfab] shadow-sm ml-1 shrink-0">▶</button>
+              <button
+                className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#35bfab] shadow-sm ml-1 shrink-0"
+                onClick={handleToggleAudio}
+                aria-label={isPlaying ? 'Pause music' : 'Play music'}
+                type="button"
+              >
+                {isPlaying ? '⏸' : '▶'}
+              </button>
             </article>
+            <audio
+              ref={audioRef}
+              src="/music/next_to_you.flac"
+              onEnded={() => setIsPlaying(false)}
+              preload="metadata"
+            />
 
             {/* Floating Heart Button beneath music player */}
             <div className="w-12 h-12 rounded-full glass-card flex items-center justify-center shadow-sm relative ml-4">

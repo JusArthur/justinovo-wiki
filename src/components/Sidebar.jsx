@@ -1,60 +1,125 @@
-// ==========================================
-// 1. Sidebar Component (1000ms Animated Pill)
-// ==========================================
-
 import { useState } from 'react';
 
+// ==========================================
+// 1. Sidebar Component (Smooth Animated Pill)
+// ==========================================
 const Sidebar = () => {
-    const [hoveredIndex, setHoveredIndex] = useState(null);
-  
-    const navItems = [
-      { label: '近期文章', icon: (<svg viewBox="0 0 24 24" className="w-5 h-5"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>) },
-      { label: '我的项目', icon: (<svg viewBox="0 0 24 24" className="w-5 h-5"><path fill="currentColor" d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>) },
-      { label: '关于网站', icon: (<svg viewBox="0 0 24 24" className="w-5 h-5"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>) },
-      { label: '推荐分享', icon: (<svg viewBox="0 0 24 24" className="w-5 h-5"><path fill="currentColor" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>) },
-      { label: '优秀博客', icon: (<svg viewBox="0 0 24 24" className="w-5 h-5"><path fill="currentColor" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.09 13.36 4 12.69 4 12s.09-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.9-4.33-3.56zm2.95-8H5.08c1.03-1.77 2.7-3.11 4.71-3.71-.62 1.15-1.11 2.38-1.46 3.71z"/></svg>) },
-    ];
-  
-    return (
-      <aside className="glass-card p-6 w-[240px]">
-        <section className="mb-6 flex items-center gap-3">
-          <div className="h-10 w-10 bg-yellow-100 rounded-full flex items-center justify-center text-xl shadow-sm">🐱</div>
-          <div>
-            <h2 className="font-semibold text-lg text-gray-800 leading-none flex items-center gap-2">
-              lvy-neko
-              <span className="text-[10px] text-[#35bfab] bg-[#35bfab]/10 px-1.5 py-0.5 rounded-full font-medium">开发中</span>
-            </h2>
-          </div>
-        </section>
-  
-        <div className="text-xs font-semibold text-gray-400 mb-3 tracking-wider">GENERAL</div>
-        
-        <nav 
-          className="relative flex flex-col gap-1.5"
-          onMouseLeave={() => setHoveredIndex(null)}
-        >
-          {/* Animated Background Pill - 1000ms latency */}
-          <div 
-            className={`absolute left-0 w-full h-[44px] bg-white rounded-full shadow-sm border border-white/80 pointer-events-none transition-all duration-[1000ms] ease-out ${hoveredIndex !== null ? 'opacity-100' : 'opacity-0'}`}
-            style={{ transform: `translateY(${hoveredIndex !== null ? hoveredIndex * (44 + 6) : 0}px)` }}
-          />
-  
-          {navItems.map((item, i) => (
-            <a 
-              key={i} 
-              href="#" 
-              className="group relative z-10 flex items-center gap-3 px-4 h-[44px] rounded-full text-sm font-medium text-[#7b888e] transition-colors"
-              onMouseEnter={() => setHoveredIndex(i)}
-            >
-              <span className={`transition-colors duration-300 ${hoveredIndex === i ? 'text-[#35bfab]' : 'text-gray-400'}`}>
-                {item.icon}
-              </span>
-              <span className={hoveredIndex === i ? 'text-gray-800' : ''}>{item.label}</span>
-            </a>
-          ))}
-        </nav>
-      </aside>
-    );
-  };
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  export default Sidebar;
+  // Exact SVGs extracted and converted to React JSX (camelCase attributes)
+  const navItems = [
+    { 
+      label: '近期文章', 
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28" className="h-7 w-7">
+          <path stroke="currentColor" strokeWidth="1.5" d="M8.4 4.328H22.09c.657 0 1.084.163 1.355.4.267.231.479.616.543 1.258l.001.009.001.01c.122.975.036 2.068-.09 3.356h-2.56v12.262c0 .587-.13 1.026-.333 1.351-.184.294-.451.53-.816.707-.19.018-.377.058-.504.083-.22.044-.332.064-.397.064H6.066c-.696 0-1.237-.22-1.598-.569-.358-.344-.607-.876-.607-1.636v-.806H6.04V6.689c0-1.428 1.04-2.361 2.361-2.361Z" />
+          <path fill="currentColor" d="M9.022 10.733h9.022c.778 0 1.09-.31 1.09-.622 0-.467-.467-.778-1.09-.778H9.022c-.466 0-.778.309-.778.778 0 .311.312.622.778.622" />
+          <mask id="scroll-outline_svg__a" fill="#fff"><path d="M9.178 13.222c-.467 0-.778.156-.778.623 0 .526.1.655.622.777h4.511c.467 0 .778-.31.778-.777 0-.312-.311-.623-.778-.623z" /></mask>
+          <path fill="currentColor" d="m9.022 14.622-.342 1.46.169.04h.173zm-.622-.777h1.5a.8.8 0 0 1-.079.326 1 1 0 0 1-.335.408c-.242.173-.427.143-.308.143v-3c-.349 0-.922.048-1.436.416-.615.44-.842 1.103-.842 1.707zm.778-.623v1.5h4.355v-3H9.178zm4.355 0v1.5a.65.65 0 0 1-.412-.166.93.93 0 0 1-.31-.711h3c0-1.349-1.208-2.123-2.278-2.123zm.778.623h-1.5a.73.73 0 0 1 .226-.497.73.73 0 0 1 .496-.226v3c.574 0 1.17-.198 1.625-.653s.653-1.05.653-1.624zm-.778.777v-1.5h-4.51v3h4.51zm-4.51 0 .34-1.46c-.098-.024-.09-.028-.04-.005.067.03.223.114.365.293.144.18.192.353.207.428.011.057.005.067.005-.034h-3c0 .249-.007.912.442 1.476.446.56 1.091.705 1.338.763z" mask="url(#scroll-outline_svg__a)" />
+          <path stroke="currentColor" strokeWidth="1.5" d="M6.2 20.82h11.5l1 3.28" />
+          <path fill="currentColor" d="M20.59 9.499a.75.75 0 1 0 1.5.002l-.75-.001zm.75-3.554-.75.001zm0 3.555h.75v-.094l.001-1.156V5.944l-.75.001-.75.001a979 979 0 0 1 0 3.458v.095zm0-3.555.75-.001c0-.126.027-.345.124-.536a.7.7 0 0 1 .48-.384L22.5 4.3l-.194-.724a2.2 2.2 0 0 0-1.43 1.155 2.76 2.76 0 0 0-.286 1.215z" />
+        </svg>
+      ) 
+    },
+    { 
+      label: '我的项目', 
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28" className="h-7 w-7">
+          <path fill="currentColor" d="M10.171 5.156q.597 0 1.025.407.426.407.425.999v5.67q.001.588-.425 1.01-.426.42-1.025.42H4.425q-.596 0-1.012-.42A1.4 1.4 0 0 1 3 12.232v-5.67q0-.589.413-.999a1.39 1.39 0 0 1 1.012-.407zm0 11.338q.597 0 1.025.407.426.407.425 1v5.693q.001.588-.425.999A1.43 1.43 0 0 1 10.17 25H4.425q-.596 0-1.012-.407a1.34 1.34 0 0 1-.413-1V17.9q0-.589.413-.999a1.38 1.38 0 0 1 1.012-.407zm11.514 0q.597 0 1.012.407.414.407.413 1v5.693q0 .588-.413.999a1.39 1.39 0 0 1-1.012.407h-5.743q-.598 0-1.025-.407a1.32 1.32 0 0 1-.425-1V17.9q-.001-.589.425-.999a1.43 1.43 0 0 1 1.024-.407zm2.855-8.846q.461.454.46 1.065.001.611-.46 1.045l-4.276 4.219q-.459.454-1.066.453-.61 0-1.067-.453l-4.276-4.22a1.41 1.41 0 0 1-.437-1.044q0-.613.437-1.065l4.274-4.216A1.5 1.5 0 0 1 19.195 3q.61 0 1.067.432z" />
+        </svg>
+      ) 
+    },
+    { 
+      label: '关于网站', 
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28" className="h-7 w-7">
+          <circle cx="14" cy="14" r="10" stroke="currentColor" strokeWidth="1.6" />
+          <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="M10 18c2.5 2.5 5.5 2.5 8 0" />
+        </svg>
+      ) 
+    },
+    { 
+      label: '推荐分享', 
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28" className="h-7 w-7">
+          <path fill="currentColor" d="M7.59 25.25c-.287 0-.57-.09-.814-.266a1.38 1.38 0 0 1-.57-1.237l.51-6.34-4.139-4.83a1.38 1.38 0 0 1-.266-1.335 1.38 1.38 0 0 1 1-.923l6.188-1.475 3.314-5.429A1.38 1.38 0 0 1 14 2.75c.488 0 .932.249 1.187.666l3.314 5.43 6.188 1.474a1.38 1.38 0 0 1 1 .923c.151.465.052.964-.267 1.335l-4.139 4.83.51 6.34c.039.487-.174.95-.57 1.237-.394.287-.899.347-1.351.158L14 22.698l-5.873 2.444a1.4 1.4 0 0 1-.536.109M14 21.037q.273 0 .533.107l5.591 2.327-.484-6.036a1.4 1.4 0 0 1 .33-1.015l3.94-4.599-5.89-1.404a1.4 1.4 0 0 1-.865-.628L14 4.62l-3.155 5.168a1.4 1.4 0 0 1-.866.628L4.09 11.82l3.941 4.598c.239.279.36.649.33 1.016l-.485 6.036 5.59-2.326q.261-.108.535-.108M18.398 8.82h.002z" />
+        </svg>
+      ) 
+    },
+    { 
+      label: '优秀博客', 
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28" className="h-7 w-7">
+          <path fill="currentColor" d="M3 14a11 11 0 1 1 22 0 11 11 0 0 1-22 0m8.142-9.025a9.45 9.45 0 0 0-3.33 1.862c.614.53 1.293.982 2.026 1.341.162-.609.348-1.178.555-1.699.221-.549.47-1.059.75-1.504M6.734 7.931a9.42 9.42 0 0 0-2.168 5.302h4.586c.035-1.238.156-2.422.351-3.518a11 11 0 0 1-2.769-1.78zm10.124 15.094a9.5 9.5 0 0 0 3.33-1.864 9.5 9.5 0 0 0-2.026-1.341q-.226.867-.555 1.699c-.22.55-.47 1.058-.75 1.504zm4.408-2.961a9.4 9.4 0 0 0 2.169-5.297H18.85a24 24 0 0 1-.353 3.517 11.1 11.1 0 0 1 2.769 1.782zm2.169-6.831a9.42 9.42 0 0 0-2.17-5.299 11 11 0 0 1-2.767 1.78c.194 1.097.315 2.281.352 3.519zm-3.25-6.396a9.45 9.45 0 0 0-3.33-1.863c.28.448.53.956.75 1.505q.314.784.554 1.7a9.5 9.5 0 0 0 2.026-1.342m-9.043 16.19a9.6 9.6 0 0 1-.749-1.506 15 15 0 0 1-.554-1.7 9.5 9.5 0 0 0-2.026 1.342 9.45 9.45 0 0 0 3.33 1.863m-4.406-2.961a11 11 0 0 1 2.767-1.78 24 24 0 0 1-.353-3.519H4.567a9.42 9.42 0 0 0 2.17 5.299zM14 4.535c-.286 0-.635.143-1.036.565-.4.423-.797 1.077-1.145 1.949a13 13 0 0 0-.54 1.694c.883.264 1.8.397 2.721.396.947 0 1.86-.138 2.723-.396a13 13 0 0 0-.54-1.693c-.35-.873-.746-1.527-1.147-1.95-.4-.422-.749-.565-1.036-.565m-3.314 8.698h6.628q-.043-1.501-.281-2.982c-.986.281-2.007.424-3.033.423-1.025 0-2.046-.142-3.031-.423q-.24 1.48-.284 2.982zm.283 4.517A11 11 0 0 1 14 17.326c1.051 0 2.069.147 3.033.424.15-.927.248-1.93.28-2.983h-6.627c.033 1.053.13 2.057.283 2.983M14 18.86a9.5 9.5 0 0 0-2.721.397c.155.618.337 1.186.54 1.693.348.873.744 1.527 1.145 1.95.4.422.75.565 1.036.565s.637-.143 1.036-.565c.4-.423.798-1.077 1.147-1.949q.304-.763.538-1.694A9.5 9.5 0 0 0 14 18.86" />
+        </svg>
+      ) 
+    },
+  ];
+
+  return (
+    <aside className="glass-card p-6 w-[280px] rounded-3xl">
+      {/* Header / Avatar Profile */}
+      <section className="mb-6 flex items-center gap-3">
+        <img 
+          src="/images/avatar.png" // Replace with your actual path or standard placeholder
+          alt="avatar" 
+          width={40} 
+          height={40} 
+          className="rounded-full object-cover bg-gray-200"
+          style={{ boxShadow: 'rgb(226, 217, 206) 0px 12px 20px -5px' }}
+        />
+        <div>
+          <h2 className="font-medium font-averia text-2xl text-gray-800 leading-none flex items-center gap-2">
+            lvy-neko
+          </h2>
+          <span className="text-brand mt-1 inline-block text-xs font-medium text-[#35bfab]">
+            (开发中)
+          </span>
+        </div>
+      </section>
+
+      {/* Section Title */}
+      <div className="text-secondary mt-6 mb-2 text-sm uppercase text-gray-400">
+        General
+      </div>
+      
+      {/* Navigation List */}
+      <nav 
+        className="relative flex flex-col space-y-2"
+        onMouseLeave={() => setHoveredIndex(null)}
+      >
+        {/* Animated Background Pill */}
+        {/* Swapped 1000ms for 300ms for responsiveness, and added the exact linear-gradient from your HTML */}
+        <div 
+          className={`absolute left-0 w-full rounded-full border border-gray-200 pointer-events-none transition-all duration-300 ease-out shadow-sm ${hoveredIndex !== null ? 'opacity-100' : 'opacity-0'}`}
+          style={{ 
+            height: '52px',
+            transform: `translateY(${hoveredIndex !== null ? hoveredIndex * (52 + 8) : 0}px)`, // 52px height + 8px space-y-2 gap
+            backgroundImage: 'linear-gradient(to right bottom, #f3f4f6 60%, #ffffff 100%)' // Approximating your var(--color-border) and var(--color-card)
+          }}
+        />
+
+        {/* Links */}
+        {navItems.map((item, i) => (
+          <a 
+            key={i} 
+            href="#" 
+            className="group relative z-10 flex items-center gap-3 px-5 py-3 h-[52px] rounded-full text-[15px] text-gray-500 transition-colors"
+            onMouseEnter={() => setHoveredIndex(i)}
+          >
+            {/* The icon changes to your brand color (#35bfab) when hovered */}
+            <div className={`flex h-7 w-7 items-center justify-center transition-colors duration-300 ${hoveredIndex === i ? 'text-[#35bfab]' : 'text-gray-400'}`}>
+              {item.icon}
+            </div>
+            {/* Text becomes darker/prominent when hovered */}
+            <span className={`font-medium transition-colors duration-300 ${hoveredIndex === i ? 'text-gray-900' : ''}`}>
+              {item.label}
+            </span>
+          </a>
+        ))}
+      </nav>
+    </aside>
+  );
+};
+
+export default Sidebar;
