@@ -61,7 +61,7 @@ const Sidebar = () => {
       {/* Header / Avatar Profile */}
       <section className="mb-6 flex items-center gap-3">
         <img 
-          src="/images/avatar.png" // Replace with your actual path or standard placeholder
+          src="/assets/avatar.jpg"
           alt="avatar" 
           width={40} 
           height={40} 

@@ -8,7 +8,7 @@ const GreetingBox = () => {
         {/* Avatar Link */}
         <a href="/live2d" className="block transition-transform hover:scale-105 duration-300">
           <img 
-            src="/images/avatar.png" 
+            src="/assets/avatar.jpg"
             alt="Ivy avatar" 
             className="mx-auto rounded-full object-cover"
             style={{ 
