@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // 1. Import the hook
 import SEGMENT_PATHS from "../ui/segment_paths"
 
 const DIGIT_MAP = {
@@ -35,6 +36,7 @@ const SvgDigit = ({ value }) => {
 
 const RealClock = () => {
     const [time, setTime] = useState(new Date());
+    const navigate = useNavigate(); // 2. Initialize the navigation hook
   
     useEffect(() => {
       const timer = setInterval(() => setTime(new Date()), 1000);
@@ -45,9 +47,12 @@ const RealClock = () => {
     const m = String(time.getMinutes()).padStart(2, '0');
   
     return (
-      // Added hover-pop here
-      <div className="glass-card hover-pop py-5 flex justify-center items-center w-[60%] h-30 bg-[#e8eae9] dark:bg-[#0a0a0a] rounded-[2rem] border-[6px] border-[#f4f5f5] dark:border-[#1a1a1a] shadow-sm">
-        <div className="flex items-center justify-center gap-2">
+      // 3. Add onClick handler and cursor-pointer utility class
+      <div 
+        onClick={() => navigate('/clock')} 
+        className="glass-card hover-pop py-5 flex justify-center items-center w-[60%] h-30 bg-[#e8eae9] dark:bg-[#0a0a0a] rounded-[2rem] border-[6px] border-[#f4f5f5] dark:border-[#1a1a1a] shadow-sm cursor-pointer"
+      >
+        <div className="flex items-center justify-center gap-2 pointer-events-none">
           <SvgDigit value={parseInt(h[0], 10)} />
           <SvgDigit value={parseInt(h[1], 10)} />
           <div className="flex flex-col justify-center gap-2 px-1">
