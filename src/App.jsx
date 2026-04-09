@@ -5,6 +5,7 @@ import RealCalendar from "./components/RealCalendar";
 import GreetingBox from "./components/GreetingBox";
 import StarshipGameBackground from "./components/StarshipGameBackground.jsx";
 import songs from "./utils/songs.jsx";
+import NavBar from "./components/NavBar.jsx";
 
 function App() {
   const audioRef = useRef(null);
@@ -201,7 +202,6 @@ function App() {
   return (
     <>
       {isDarkMode && <StarshipGameBackground />}
-
       <main
         ref={mobileMainRef}
         className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5"
