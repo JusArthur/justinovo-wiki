@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import RealClock from './components/RealClock';
 import RealCalendar from './components/RealCalendar';
 import GreetingBox from './components/GreetingBox';
+import StarshipGameBackground from './components/StarshipGameBackground.jsx';
 
 function App() {
   const songs = [
@@ -146,6 +147,8 @@ function App() {
 
   return (
     <>
+      {isDarkMode && <StarshipGameBackground />}
+
       <main className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5">
         <div className={`glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${getRevealClass(2, 'up')}`}>
           <img
