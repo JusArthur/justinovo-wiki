@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-
+import BooksPage from "./pages/Books";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";           
 import ClockView from "./components/ClockView";
@@ -45,9 +45,6 @@ function App() {
             path="/" 
             element={
               <motion.div
-                // 2. DYNAMIC INITIAL STATE:
-                // If returning from Nav: Start tiny at the top-left corner.
-                // If Initial Load: Start scaled down slightly in the center.
                 initial={
                   isFromNav 
                     ? { opacity: 0, scale: 0.05, borderRadius: "100px" } 
@@ -82,6 +79,7 @@ function App() {
             } 
           />
 
+<Route path="/books" element={<BooksPage lang="EN" />} />
           <Route 
             path="/clock" 
             element={
