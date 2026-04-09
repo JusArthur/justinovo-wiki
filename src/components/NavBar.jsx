@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const NavBar = ({ lang = "EN" }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -60,10 +61,12 @@ const NavBar = ({ lang = "EN" }) => {
   ];
 
   return (
-    <div className="fixed top-6 left-6 z-50 glass-card px-4 py-2 flex items-center gap-6 shadow-md border-white/60 dark:border-[#39ff14]/30">
+    // FIX 1: Added w-max and flex-nowrap to guarantee the glass card stretches to hold all icons. 
+    // Gap reduced slightly to 4 to keep it tight.
+    <div className="fixed top-6 left-6 z-50 glass-card px-4 py-2 flex flex-nowrap items-center gap-4 w-max shadow-md border-white/60 dark:border-[#39ff14]/30">
       
-      {/* Home / Avatar Link */}
-      <a href="/" className="shrink-0 flex items-center transition-transform hover:scale-105" title={lang === "EN" ? "Home" : "首页"}>
+      {/* FIX 2: Changed <a> to <Link> for SPA routing */}
+      <Link to="/" className="shrink-0 flex items-center transition-transform hover:scale-105" title={lang === "EN" ? "Home" : "首页"}>
         <img
           src="/assets/avatar.jpg"
           alt="avatar"
@@ -72,31 +75,30 @@ const NavBar = ({ lang = "EN" }) => {
           className="rounded-full object-cover dark:brightness-90 dark:contrast-125"
           style={{ boxShadow: "rgb(226, 217, 206) 0px 8px 16px -5px" }}
         />
-      </a>
+      </Link>
 
-      {/* Nav Links Container */}
       <nav 
-        className="relative flex items-center gap-2"
+        // FIX 3: Added shrink-0 and flex-nowrap to prevent the icons from squishing
+        className="relative flex flex-nowrap items-center gap-2 shrink-0"
         onMouseLeave={() => setHoveredIndex(null)}
       >
-        {/* Sliding Active Pill */}
-        {/* Width matches the w-11 anchor below, X-translation handles the 44px width + 8px gap (gap-2) */}
         <div
           className={`absolute left-0 h-11 w-11 rounded-full bg-white/60 dark:bg-[#39ff14]/20 border border-transparent dark:border-[#39ff14]/40 shadow-sm pointer-events-none transition-all duration-300 ease-out ${
             hoveredIndex !== null ? "opacity-100" : "opacity-0"
           }`}
           style={{
-            transform: `translateX(${hoveredIndex !== null ? hoveredIndex * (44 + 8) : 0}px)`,
+            // FIX 4: Replaced pixel math with REM math (2.75rem width + 0.5rem gap = 3.25rem).
+            // This prevents the pill from drifting off-center if the user's browser has a non-standard font size.
+            transform: `translateX(calc(${hoveredIndex !== null ? hoveredIndex : 0} * 3.25rem))`,
           }}
         />
 
-        {/* Icons */}
         {navItems.map((item, i) => (
-          <a
+          <Link
             key={i}
-            href={item.href}
+            to={item.href}
             title={item.label}
-            className="relative z-10 flex h-11 w-11 items-center justify-center rounded-full transition-colors duration-300"
+            className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors duration-300"
             onMouseEnter={() => setHoveredIndex(i)}
           >
             <div
@@ -108,7 +110,7 @@ const NavBar = ({ lang = "EN" }) => {
             >
               {item.icon}
             </div>
-          </a>
+          </Link>
         ))}
       </nav>
     </div>
