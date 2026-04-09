@@ -291,7 +291,7 @@ function Home({ isDarkMode, setIsDarkMode }) {
             </a>
           </div>
 
-          <div className="mt-8 flex justify-between items-start w-[520px] ml-30 relative z-30">
+          <div className="mt-8 flex justify-between items-start w-[600px] ml-50 relative z-30">
             <article
               className={`glass-card hover-pop p-5 w-[240px] shadow-sm ${getRevealClass(
                 6,
