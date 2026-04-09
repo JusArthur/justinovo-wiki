@@ -9,8 +9,6 @@ import StarshipGameBackground from "./components/StarshipGameBackground";
 
 function App() {
   const location = useLocation();
-  
-  // Lift the dark mode state to the top level so the background persists smoothly
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -21,17 +19,18 @@ function App() {
     }
   }, [isDarkMode]);
 
+  // 1. Check if the user navigated here from the NavBar
+  const isFromNav = location.state?.fromNav;
+
   return (
     <>
-      {/* 1. The Canvas sits entirely outside the animation block. It will never lag now. */}
       {isDarkMode && <StarshipGameBackground />}
 
-      {/* 2. Persistent NavBar */}
       {location.pathname !== "/" && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3, delay: 0.2 }} 
+          transition={{ duration: 0.2 }} 
           className="fixed top-6 left-6 z-50"
           style={{ willChange: "transform, opacity" }}
         >
@@ -39,7 +38,6 @@ function App() {
         </motion.div>
       )}
 
-      {/* 3. Optimized AnimatePresence */}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           
@@ -47,24 +45,38 @@ function App() {
             path="/" 
             element={
               <motion.div
-                // Removed the expensive filter: blur()
-                initial={{ opacity: 0, scale: 0.2 }}
-                animate={{ opacity: 1, scale: 1 }}
+                // 2. DYNAMIC INITIAL STATE:
+                // If returning from Nav: Start tiny at the top-left corner.
+                // If Initial Load: Start scaled down slightly in the center.
+                initial={
+                  isFromNav 
+                    ? { opacity: 0, scale: 0.05, borderRadius: "100px" } 
+                    : { opacity: 0, scale: 0.8, y: 30, borderRadius: "0px" }
+                }
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  y: 0,
+                  borderRadius: "0px",
+                  transition: { 
+                    duration: isFromNav ? 0.5 : 0.6, 
+                    ease: [0.22, 1, 0.36, 1] 
+                  }
+                }}
                 exit={{ 
                   opacity: 0, 
-                  scale: 0.05, // Stop slightly earlier to avoid floating point math errors in the browser
-                  borderRadius: "100px" 
+                  scale: 0.05, 
+                  borderRadius: "100px",
+                  transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } 
                 }}
-                
-                // Hardware acceleration hints force the GPU to handle this layer
                 style={{ 
-                  transformOrigin: "40px 40px",
+                  // 3. DYNAMIC TRANSFORM ORIGIN:
+                  // 40px 40px = Drag from top-left. center center = Pop up from middle.
+                  transformOrigin: isFromNav ? "40px 40px" : "center center",
                   willChange: "transform, opacity, border-radius" 
                 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} 
-                className="w-full min-h-screen origin-top-left flex flex-col items-center relative z-10"
+                className="w-full min-h-screen flex flex-col items-center relative z-10"
               >
-                {/* Pass isDarkMode down if Home needs to toggle it */}
                 <Home isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
               </motion.div>
             } 
@@ -74,11 +86,17 @@ function App() {
             path="/clock" 
             element={
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0,
+                  transition: { duration: 0.4, ease: "easeOut", delay: 0.1 } 
+                }}
+                exit={{ 
+                  opacity: 0,
+                  transition: { duration: 0.1 } 
+                }}
                 style={{ willChange: "transform, opacity" }}
-                transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
                 className="w-full min-h-screen flex flex-col items-center justify-center relative z-10"
               >
                 <ClockView lang="EN" />

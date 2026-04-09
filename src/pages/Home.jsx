@@ -1,27 +1,28 @@
-import { useCallback, useEffect, useRef, useState, useLocation } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import RealClock from "../components/RealClock";
 import RealCalendar from "../components/RealCalendar";
 import GreetingBox from "../components/GreetingBox";
-import StarshipGameBackground from "../components/StarshipGameBackground.jsx";
-import songs from "../utils/songs.jsx";
+import { useMusic } from "../context/MusicContext"; // Import the global music context
 
-function Home() {
-  const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [playbackMode, setPlaybackMode] = useState("order"); // order | single
+// Accept isDarkMode and setIsDarkMode from App.jsx
+function Home({ isDarkMode, setIsDarkMode }) {
+  // Pull all audio state and functions from the global context
+  const {
+    currentSong,
+    isPlaying,
+    playbackMode,
+    handleToggleAudio,
+    handleNextSong,
+    handlePrevSong,
+    togglePlaybackMode,
+  } = useMusic();
+
   const [visibleStep, setVisibleStep] = useState(0);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [lang, setLang] = useState("EN");
   const mobileMainRef = useRef(null);
   const desktopMainRef = useRef(null);
   const revealIntervalRef = useRef(null);
-  const resizeDebounceRef = useRef(null);
-  const resizeStartRectRef = useRef(null);
-  const layoutAnimFrameRef = useRef(null);
-  const currentSong = songs[currentSongIndex];
-  const currentSongSrc = `/music/${encodeURI(currentSong.fileName)}`;
 
   const triggerRevealAnimation = useCallback(() => {
     if (revealIntervalRef.current) {
@@ -42,14 +43,6 @@ function Home() {
     }, 110);
   }, []);
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
-
   // Re-run animation when language changes
   useEffect(() => {
     triggerRevealAnimation();
@@ -61,9 +54,7 @@ function Home() {
     const mobileMain = mobileMainRef.current;
 
     // Track the last known resting positions of the containers
-    let lastDesktopRect = desktopMain
-      ? desktopMain.getBoundingClientRect()
-      : null;
+    let lastDesktopRect = desktopMain ? desktopMain.getBoundingClientRect() : null;
     let lastMobileRect = mobileMain ? mobileMain.getBoundingClientRect() : null;
 
     const resizeObserver = new ResizeObserver(() => {
@@ -90,8 +81,7 @@ function Home() {
           void el.offsetWidth;
 
           // Now, glide smoothly to the new 0,0 center position (575ms = 15% longer)
-          el.style.transition =
-            "transform 575ms cubic-bezier(0.22, 1, 0.36, 1)";
+          el.style.transition = "transform 575ms cubic-bezier(0.22, 1, 0.36, 1)";
           el.style.transform = "translate(0px, 0px)";
         } else {
           // If it didn't move, just restore what was there
@@ -101,16 +91,8 @@ function Home() {
         updateRect(currentRect);
       };
 
-      applySmoothReCenter(
-        desktopMain,
-        lastDesktopRect,
-        (r) => (lastDesktopRect = r)
-      );
-      applySmoothReCenter(
-        mobileMain,
-        lastMobileRect,
-        (r) => (lastMobileRect = r)
-      );
+      applySmoothReCenter(desktopMain, lastDesktopRect, (r) => (lastDesktopRect = r));
+      applySmoothReCenter(mobileMain, lastMobileRect, (r) => (lastMobileRect = r));
     });
 
     // Observe the document body to catch ANY layout space changes (DevTools, Window Drag, etc)
@@ -118,7 +100,7 @@ function Home() {
 
     return () => resizeObserver.disconnect();
   }, []);
-  
+
   const getRevealClass = (step, direction = "up") => {
     const hiddenOffset =
       direction === "left"
@@ -134,73 +116,8 @@ function Home() {
     }`;
   };
 
-  const handleToggleAudio = async () => {
-    if (!audioRef.current) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      return;
-    }
-    try {
-      await audioRef.current.play();
-      setIsPlaying(true);
-    } catch {
-      setIsPlaying(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!audioRef.current) return;
-
-    audioRef.current.load();
-    if (isPlaying) {
-      audioRef.current.play().catch(() => setIsPlaying(false));
-    }
-  }, [currentSongSrc, isPlaying]);
-
-  const handleSongSelect = async (index) => {
-    setCurrentSongIndex(index);
-    if (!audioRef.current) return;
-
-    try {
-      await audioRef.current.play();
-      setIsPlaying(true);
-    } catch {
-      setIsPlaying(false);
-    }
-  };
-
-  const handleNextSong = () => {
-    const nextIndex = (currentSongIndex + 1) % songs.length;
-    handleSongSelect(nextIndex);
-  };
-
-  const handlePrevSong = () => {
-    const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-    handleSongSelect(prevIndex);
-  };
-
-  const handleAudioEnded = async () => {
-    if (!audioRef.current) return;
-
-    if (playbackMode === "single") {
-      try {
-        audioRef.current.currentTime = 0;
-        await audioRef.current.play();
-        setIsPlaying(true);
-      } catch {
-        setIsPlaying(false);
-      }
-      return;
-    }
-
-    const nextIndex = (currentSongIndex + 1) % songs.length;
-    handleSongSelect(nextIndex);
-  };
-
   return (
     <>
-      {isDarkMode && <StarshipGameBackground />}
       <main
         ref={mobileMainRef}
         className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5"
@@ -220,12 +137,7 @@ function Home() {
 
         <GreetingBox lang={lang} />
 
-        <div
-          className={`flex justify-center gap-3 w-full max-w-[420px] ${getRevealClass(
-            7,
-            "up"
-          )}`}
-        >
+        <div className={`flex justify-center gap-3 w-full max-w-[420px] ${getRevealClass(7, "up")}`}>
           <a className="social-chip dark" href="#">
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
               <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
@@ -416,14 +328,12 @@ function Home() {
               </div>
             </article>
 
+            {/* GLOBAL MUSIC PLAYER INTEGRATION */}
             <div
-              className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(
-                5,
-                "right"
-              )}`}
+              className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(5, "up")}`}
             >
               <article
-                className="glass-card hover-pop p-2 pr-2 w-[295px] rounded-full flex items-center gap-3 cursor-pointer"
+                className="glass-card hover-pop p-2 pr-2 w-[310px] rounded-full flex items-center gap-3 cursor-pointer"
                 onClick={handleToggleAudio}
               >
                 <div className="w-10 h-10 rounded-full bg-white/50 dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shrink-0">
@@ -439,14 +349,72 @@ function Home() {
                     />
                   </svg>
                 </div>
-                <div className="flex-1">
-                  <p className="text-xs font-medium text-gray-700 dark:text-gray-200 mb-1">
-                    {currentSong.title[lang]}
+
+                <div className="flex-1 overflow-hidden">
+                  <p className="text-xs font-medium text-gray-700 dark:text-gray-200 mb-1 truncate">
+                    {currentSong?.title["EN"] || "Loading..."}
                   </p>
                   <div className="h-1.5 w-full bg-white/60 dark:bg-white/20 rounded-full overflow-hidden">
                     <div className="h-full bg-white dark:bg-[#39ff14] w-full rounded-full"></div>
                   </div>
                 </div>
+
+                {/* Toggle Playback Mode Button (Order vs Single) */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePlaybackMode();
+                  }}
+                  className="w-7 h-7 rounded-full bg-transparent hover:bg-white/40 dark:hover:bg-[#39ff14]/20 flex items-center justify-center text-gray-500 dark:text-[#39ff14]/80 transition-colors shrink-0"
+                  title={
+                    playbackMode === "order" ? "Play in Order" : "Loop Single"
+                  }
+                >
+                  {playbackMode === "order" ? (
+                    // Order (Loop All) Icon
+                    <svg
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                  ) : (
+                    // Single (Loop 1) Icon
+                    <svg
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="w-4 h-4 relative"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                      <text
+                        x="12"
+                        y="16"
+                        textAnchor="middle"
+                        fontSize="8"
+                        fontWeight="bold"
+                        fill="currentColor"
+                        strokeWidth="0"
+                      >
+                        1
+                      </text>
+                    </svg>
+                  )}
+                </button>
+
                 <button
                   type="button"
                   onClick={(e) => {
@@ -454,14 +422,17 @@ function Home() {
                     handlePrevSong();
                   }}
                   className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0"
-                  aria-label="Previous song"
                 >
                   &laquo;
                 </button>
+
                 <button
-                  className="w-9 h-9 rounded-full bg-white dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shadow-sm ml-1 shrink-0"
-                  aria-label={isPlaying ? "Pause music" : "Play music"}
                   type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleAudio();
+                  }}
+                  className="w-9 h-9 rounded-full bg-white dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shadow-sm ml-0.5 shrink-0"
                 >
                   {isPlaying ? (
                     <svg
@@ -489,24 +460,18 @@ function Home() {
                     </svg>
                   )}
                 </button>
+
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleNextSong();
                   }}
-                  className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0 ml-1"
-                  aria-label="Next song"
+                  className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0 ml-0.5"
                 >
                   &raquo;
                 </button>
               </article>
-              <audio
-                ref={audioRef}
-                src={currentSongSrc}
-                onEnded={handleAudioEnded}
-                preload="metadata"
-              />
 
               <button className="mt-4 ml-6 w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative text-pink-400 dark:text-[#39ff14]">
                 <svg
