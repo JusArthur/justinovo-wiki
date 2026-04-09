@@ -10,7 +10,7 @@ function App() {
       id: 'jaychou-i-do',
       artist: 'Jay Chou',
       fileName: '周杰伦 - I Do.flac',
-      title: { EN: 'I Do', CN: 'I do' },
+      title: { EN: 'I Do', CN: 'I Do' },
     },
     {
       id: 'jaychou-xiang-nv-duo-qing',
@@ -276,7 +276,7 @@ function App() {
       </div>
 
       {/* ---------------- RIGHT COLUMN ---------------- */}
-      <div className="w-[350px] min-w-[350px] flex flex-col gap-4 z-10 mb-20">
+      <div className="w-full lg:w-[350px] lg:min-w-[350px] flex flex-col gap-4 z-10 mb-8 lg:mb-20">
         
         <div className={`flex justify-start gap-3 mb-2 ${getRevealClass(8, 'right')}`}>
           <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] dark:bg-[#39ff14] text-white dark:text-black text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] dark:shadow-[0_4px_14px_rgba(57,255,20,0.4)] transition-all duration-300 hover:scale-110 hover:z-50 hover:bg-[#2da896] dark:hover:bg-[#32e612] cursor-pointer">
