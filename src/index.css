@@ -11,14 +11,47 @@
 
   body {
     margin: 0;
-    background: radial-gradient(circle at top left, #f4f9f3 0%, #eef3e6 40%, #e0ebd9 100%);
+    background: linear-gradient(
+      to bottom,
+      #f8fbf4 0%,
+      #f4f9ee 33%,
+      #eef6db 72%,
+      #e6f2ce 100%
+    );
     min-height: 100vh;
+    position: relative;
+    isolation: isolate;
     transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    left: 50%;
+    bottom: -180px;
+    transform: translateX(-50%);
+    width: min(88vw, 980px);
+    height: min(42vh, 360px);
+    border-radius: 9999px;
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(52px);
+    opacity: 0.55;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 233, 126, 0.55) 0%,
+      rgba(201, 243, 142, 0.45) 52%,
+      rgba(201, 243, 142, 0) 82%
+    );
   }
 
   .dark body {
     background: radial-gradient(circle at top left, #111111 0%, #080808 40%, #000000 100%);
     color: #39ff14; 
+  }
+
+  .dark body::after {
+    opacity: 0;
   }
 }
 
