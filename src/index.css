@@ -13,10 +13,12 @@
     margin: 0;
     background: linear-gradient(
       to bottom,
-      #f8fbf4 0%,
-      #f4f9ee 33%,
-      #eef6db 72%,
-      #e6f2ce 100%
+      #f5faf9 0%,
+      #edf7f6 33%,
+      #dff2ef 42%,
+      #d7eef2 62%,
+      #cdeac7 82%,
+      #bde3b7 100%
     );
     min-height: 100vh;
     position: relative;
@@ -39,9 +41,9 @@
     opacity: 0.55;
     background: radial-gradient(
       ellipse at center,
-      rgba(255, 233, 126, 0.55) 0%,
-      rgba(201, 243, 142, 0.45) 52%,
-      rgba(201, 243, 142, 0) 82%
+      rgba(168, 225, 255, 0.5) 0%,
+      rgba(148, 224, 196, 0.44) 50%,
+      rgba(148, 224, 196, 0) 82%
     );
   }
 
