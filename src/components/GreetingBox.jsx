@@ -32,7 +32,7 @@ const GreetingBox = ({ lang }) => {
         />
       </a>
 
-      <h1 className="font-averia mt-4 text-2xl text-gray-800 dark:text-gray-100 leading-[1.4]">
+      <h1 className={`${lang === 'EN' ? 'font-greeting-en' : 'font-greeting-cn'} mt-4 text-2xl tracking-tight text-gray-800 dark:text-gray-100 leading-[1.4]`}>
         {lang === 'EN' ? (
           <>
             {greetingText} <br />

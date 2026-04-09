@@ -7,8 +7,6 @@ import StarshipGameBackground from './components/StarshipGameBackground.jsx';
 import songs from './utils/songs.jsx'
 
 function App() {
-
-
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
