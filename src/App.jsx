@@ -7,6 +7,12 @@ import GreetingBox from './components/GreetingBox';
 function App() {
   const songs = [
     {
+      id: 'next-to-you',
+      artist: 'parasyte',
+      fileName: 'next_to_you.flac',
+      title: {EN: 'Next To You', CN: 'Next To You'}
+    },
+    {
       id: 'jaychou-i-do',
       artist: 'Jay Chou',
       fileName: '周杰伦 - I Do.flac',
