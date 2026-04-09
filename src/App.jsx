@@ -10,7 +10,7 @@ function App() {
       id: 'jaychou-i-do',
       artist: 'Jay Chou',
       fileName: '周杰伦 - I Do.flac',
-      title: { EN: 'I Do', CN: 'I 愿意' },
+      title: { EN: 'I Do', CN: 'I do' },
     },
     {
       id: 'jaychou-xiang-nv-duo-qing',
