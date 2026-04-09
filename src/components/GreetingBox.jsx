@@ -10,8 +10,8 @@ const GreetingBox = ({ lang }) => {
       return isEnglish ? "Good Afternoon" : "下午好";
     } else {
       return isEnglish 
-        ? "Have a magical day and Good Night" 
-        : "祝你拥有魔法般的一天，晚安";
+        ? "Have a magical day" 
+        : "祝你拥有魔法般的一天";
     }
   };
 

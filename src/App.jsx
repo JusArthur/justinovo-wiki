@@ -5,11 +5,36 @@ import RealCalendar from './components/RealCalendar';
 import GreetingBox from './components/GreetingBox';
 
 function App() {
+  const songs = [
+    {
+      id: 'jaychou-i-do',
+      artist: 'Jay Chou',
+      fileName: '周杰伦 - I Do.flac',
+      title: { EN: 'I Do', CN: 'I 愿意' },
+    },
+    {
+      id: 'jaychou-xiang-nv-duo-qing',
+      artist: 'Jay Chou',
+      fileName: '周杰伦 - 湘女多情.flac',
+      title: { EN: 'The girl from Hunan', CN: '湘女多情' },
+    },
+    {
+      id: 'jaychou-aegean-sea',
+      artist: 'Jay Chou',
+      fileName: '周杰伦 - 爱琴海.flac',
+      title: { EN: 'Aegean Sea', CN: '爱琴海' },
+    },
+  ];
+
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [playbackMode, setPlaybackMode] = useState('order'); // order | single
   const [visibleStep, setVisibleStep] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false); 
   const [lang, setLang] = useState('EN'); 
+  const currentSong = songs[currentSongIndex];
+  const currentSongSrc = `/music/${encodeURI(currentSong.fileName)}`;
 
   useEffect(() => {
     if (isDarkMode) {
@@ -60,6 +85,57 @@ function App() {
     } catch {
       setIsPlaying(false);
     }
+  };
+
+  useEffect(() => {
+    if (!audioRef.current) return;
+
+    audioRef.current.load();
+    if (isPlaying) {
+      audioRef.current
+        .play()
+        .catch(() => setIsPlaying(false));
+    }
+  }, [currentSongSrc, isPlaying]);
+
+  const handleSongSelect = async (index) => {
+    setCurrentSongIndex(index);
+    if (!audioRef.current) return;
+
+    try {
+      await audioRef.current.play();
+      setIsPlaying(true);
+    } catch {
+      setIsPlaying(false);
+    }
+  };
+
+  const handleNextSong = () => {
+    const nextIndex = (currentSongIndex + 1) % songs.length;
+    handleSongSelect(nextIndex);
+  };
+
+  const handlePrevSong = () => {
+    const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    handleSongSelect(prevIndex);
+  };
+
+  const handleAudioEnded = async () => {
+    if (!audioRef.current) return;
+
+    if (playbackMode === 'single') {
+      try {
+        audioRef.current.currentTime = 0;
+        await audioRef.current.play();
+        setIsPlaying(true);
+      } catch {
+        setIsPlaying(false);
+      }
+      return;
+    }
+
+    const nextIndex = (currentSongIndex + 1) % songs.length;
+    handleSongSelect(nextIndex);
   };
 
   return (
@@ -140,18 +216,31 @@ function App() {
 
           <div className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(5, 'right')}`}>
             <article 
-              className="glass-card hover-pop p-2 pr-4 w-[275px] rounded-full flex items-center gap-3 cursor-pointer"
+              className="glass-card hover-pop p-2 pr-2 w-[295px] rounded-full flex items-center gap-3 cursor-pointer"
               onClick={handleToggleAudio}
             >
               <div className="w-10 h-10 rounded-full bg-white/50 dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shrink-0">
                 <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path fillRule="evenodd" d="M19.322 3.322c.314-.028.678.21.678.53v12.248a4.5 4.5 0 11-1.5-3.385V8.19l-9 2.01v7.899a4.5 4.5 0 11-1.5-3.384V5.215c0-.395.347-.723.738-.723h.054c.264 0 .524.088.736.248l9.043-2.01a1.5 1.5 0 01.249-.008z" clipRule="evenodd" /></svg>
               </div>
               <div className="flex-1">
-                <p className="text-xs font-medium text-gray-600 dark:text-gray-300 mb-1">Next To You</p>
+                <p className="text-xs font-medium text-gray-700 dark:text-gray-200 mb-1">
+                  {currentSong.title[lang]}
+                </p>
                 <div className="h-1.5 w-full bg-white/60 dark:bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-white dark:bg-[#39ff14] w-1/3 rounded-full"></div>
+                  <div className="h-full bg-white dark:bg-[#39ff14] w-full rounded-full"></div>
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevSong();
+                }}
+                className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0"
+                aria-label="Previous song"
+              >
+                &laquo;
+              </button>
               <button
                 className="w-9 h-9 rounded-full bg-white dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shadow-sm ml-1 shrink-0"
                 aria-label={isPlaying ? 'Pause music' : 'Play music'}
@@ -163,8 +252,19 @@ function App() {
                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4"><path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" /></svg>
                 )}
               </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextSong();
+                }}
+                className="w-7 h-7 rounded-full bg-white/70 dark:bg_black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0 ml-1"
+                aria-label="Next song"
+              >
+                &raquo;
+              </button>
             </article>
-            <audio ref={audioRef} src="/music/next_to_you.flac" onEnded={() => setIsPlaying(false)} preload="metadata" />
+            <audio ref={audioRef} src={currentSongSrc} onEnded={handleAudioEnded} preload="metadata" />
 
             <button className="mt-4 ml-6 w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative text-pink-400 dark:text-[#39ff14]">
               <svg fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6"><path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" /></svg>
