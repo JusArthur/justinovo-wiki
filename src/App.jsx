@@ -184,7 +184,7 @@ function App() {
         </button>
       </main>
 
-      <main className="hidden md:flex max-w-[1100px] mx-auto min-h-screen p-8 flex-nowrap justify-center items-center gap-6 relative overflow-x-auto">
+      <main className="hidden md:flex max-w-[1100px] mx-auto min-h-screen p-8 flex-nowrap justify-center items-center gap-6 relative overflow-x-hidden">
       
       {/* ---------------- LEFT COLUMN ---------------- */}
       <div className="w-[260px] min-w-[260px] flex flex-col gap-6 z-10">
