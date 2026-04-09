@@ -303,7 +303,7 @@ function App() {
                   e.stopPropagation();
                   handleNextSong();
                 }}
-                className="w-7 h-7 rounded-full bg-white/70 dark:bg_black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0 ml-1"
+                className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0 ml-1"
                 aria-label="Next song"
               >
                 &raquo;
