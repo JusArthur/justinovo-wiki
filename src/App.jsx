@@ -139,7 +139,43 @@ function App() {
   };
 
   return (
-    <main className="max-w-[1100px] mx-auto min-h-screen p-8 flex flex-nowrap justify-center items-center gap-6 relative overflow-x-auto">
+    <>
+      <main className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5">
+        <div className={`glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${getRevealClass(2, 'up')}`}>
+          <img
+            className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
+            src="/assets/album.png"
+            alt="Photo collage"
+          />
+        </div>
+
+        <GreetingBox lang={lang} />
+
+        <div className={`flex justify-center gap-3 w-full max-w-[420px] ${getRevealClass(7, 'up')}`}>
+          <a className="social-chip dark" href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg>
+            Github
+          </a>
+          <a className="social-chip" href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-gray-900 dark:text-white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.918H5.053z"></path></svg>
+            X
+          </a>
+          <a className="social-chip" href="#">
+            <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4 text-red-500 dark:text-[#39ff14]"><path d="M19.5 22.5h-15A1.5 1.5 0 013 21V3a1.5 1.5 0 011.5-1.5h15A1.5 1.5 0 0121 3v18a1.5 1.5 0 01-1.5 1.5zM4.5 21h15V3h-15v18z" /><path d="M16 11H8V9h8v2zM16 15H8v-2h8v2z"/></svg>
+            {lang === 'EN' ? 'RED' : '小红书'}
+          </a>
+          <a className="w-10 h-10 rounded-xl bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] transition-all duration-300 hover:scale-110 hover:z-50" href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" /><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" /></svg>
+          </a>
+        </div>
+
+        <button className="w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative text-pink-400 dark:text-[#39ff14]">
+          <svg fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6"><path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" /></svg>
+          <span className="absolute -top-2 -right-4 bg-white/80 dark:bg-black/80 backdrop-blur-md text-gray-500 dark:text-[#39ff14] text-[10px] px-1.5 py-0.5 rounded-full border border-white dark:border-[#39ff14]/40">15690</span>
+        </button>
+      </main>
+
+      <main className="hidden md:flex max-w-[1100px] mx-auto min-h-screen p-8 flex-nowrap justify-center items-center gap-6 relative overflow-x-auto">
       
       {/* ---------------- LEFT COLUMN ---------------- */}
       <div className="w-[260px] min-w-[260px] flex flex-col gap-6 z-10">
@@ -315,7 +351,8 @@ function App() {
         </div>
 
       </div>
-    </main>
+      </main>
+    </>
   )
 }
 
