@@ -56,7 +56,9 @@ function Home({ isDarkMode, setIsDarkMode }) {
     const mobileMain = mobileMainRef.current;
 
     // Track the last known resting positions of the containers
-    let lastDesktopRect = desktopMain ? desktopMain.getBoundingClientRect() : null;
+    let lastDesktopRect = desktopMain
+      ? desktopMain.getBoundingClientRect()
+      : null;
     let lastMobileRect = mobileMain ? mobileMain.getBoundingClientRect() : null;
 
     const resizeObserver = new ResizeObserver(() => {
@@ -83,7 +85,8 @@ function Home({ isDarkMode, setIsDarkMode }) {
           void el.offsetWidth;
 
           // Now, glide smoothly to the new 0,0 center position (575ms = 15% longer)
-          el.style.transition = "transform 575ms cubic-bezier(0.22, 1, 0.36, 1)";
+          el.style.transition =
+            "transform 575ms cubic-bezier(0.22, 1, 0.36, 1)";
           el.style.transform = "translate(0px, 0px)";
         } else {
           // If it didn't move, just restore what was there
@@ -93,8 +96,16 @@ function Home({ isDarkMode, setIsDarkMode }) {
         updateRect(currentRect);
       };
 
-      applySmoothReCenter(desktopMain, lastDesktopRect, (r) => (lastDesktopRect = r));
-      applySmoothReCenter(mobileMain, lastMobileRect, (r) => (lastMobileRect = r));
+      applySmoothReCenter(
+        desktopMain,
+        lastDesktopRect,
+        (r) => (lastDesktopRect = r)
+      );
+      applySmoothReCenter(
+        mobileMain,
+        lastMobileRect,
+        (r) => (lastMobileRect = r)
+      );
     });
 
     // Observe the document body to catch ANY layout space changes (DevTools, Window Drag, etc)
@@ -124,23 +135,28 @@ function Home({ isDarkMode, setIsDarkMode }) {
         ref={mobileMainRef}
         className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5"
       >
-<Link
-  to="/collage"
-  className={`block glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${getRevealClass(
-    2,
-    "up"
-  )}`}
->
-  <img
-    className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
-    src="/assets/album.png"
-    alt="Photo collage"
-  />
-</Link>
+        <Link
+          to="/collage"
+          className={`block glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${getRevealClass(
+            2,
+            "up"
+          )}`}
+        >
+          <img
+            className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
+            src="/assets/album.png"
+            alt="Photo collage"
+          />
+        </Link>
 
         <GreetingBox lang={lang} />
 
-        <div className={`flex justify-center gap-3 w-full max-w-[420px] ${getRevealClass(7, "up")}`}>
+        <div
+          className={`flex justify-center gap-3 w-full max-w-[420px] ${getRevealClass(
+            7,
+            "up"
+          )}`}
+        >
           <a className="social-chip dark" href="#">
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
               <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
@@ -235,8 +251,9 @@ function Home({ isDarkMode, setIsDarkMode }) {
 
         {/* ---------------- CENTER COLUMN ---------------- */}
         <div className="w-[400px] min-w-[400px] flex flex-col items-center relative z-20 mt-10">
-          <div
-            className={`glass-card hover-pop w-90 h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 mb-10 ${getRevealClass(
+          <Link
+            to="/collage"
+            className={`block glass-card hover-pop w-90 h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 mb-10 ${getRevealClass(
               2,
               "up"
             )}`}
@@ -246,7 +263,7 @@ function Home({ isDarkMode, setIsDarkMode }) {
               src="/assets/album.png"
               alt="Photo collage"
             />
-          </div>
+          </Link>
 
           <GreetingBox lang={lang} />
 
@@ -333,7 +350,10 @@ function Home({ isDarkMode, setIsDarkMode }) {
 
             {/* GLOBAL MUSIC PLAYER INTEGRATION */}
             <div
-              className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(5, "up")}`}
+              className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(
+                5,
+                "up"
+              )}`}
             >
               <article
                 className="glass-card hover-pop p-2 pr-2 w-[310px] rounded-full flex items-center gap-3 cursor-pointer"
