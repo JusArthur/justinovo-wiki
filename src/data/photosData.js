@@ -85,7 +85,7 @@ export const photosData = [
         initialY: -240,
         rotate: 15,
         date: "2026-03-08 18:30",
-        note: "Indian food could be sooooo good!",
+        note: "Iykyk Chongqing hotpot is the GOAT!",
       },
       {
         id: 9,
@@ -107,6 +107,6 @@ export const photosData = [
         initialY: -150,
         rotate: 18,
         date: "2026-03-08 18:30",
-        note: "Indian food could be sooooo good!",
+        note: "After reading Mamba Mentality I took those down!",
       },
   ];
