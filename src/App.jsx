@@ -135,7 +135,7 @@ function App() {
             }
           />
 
-<Route
+          <Route
             path="/collage"
             element={
               <motion.div

@@ -5,6 +5,8 @@ import RealCalendar from "../components/RealCalendar";
 import GreetingBox from "../components/GreetingBox";
 import { useMusic } from "../context/MusicContext";
 
+import { Link } from "react-router-dom";
+
 // Accept isDarkMode and setIsDarkMode from App.jsx
 function Home({ isDarkMode, setIsDarkMode }) {
   // Pull all audio state and functions from the global context
@@ -122,18 +124,19 @@ function Home({ isDarkMode, setIsDarkMode }) {
         ref={mobileMainRef}
         className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5"
       >
-        <div
-          className={`glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${getRevealClass(
-            2,
-            "up"
-          )}`}
-        >
-          <img
-            className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
-            src="/assets/album.png"
-            alt="Photo collage"
-          />
-        </div>
+<Link
+  to="/collage"
+  className={`block glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${getRevealClass(
+    2,
+    "up"
+  )}`}
+>
+  <img
+    className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
+    src="/assets/album.png"
+    alt="Photo collage"
+  />
+</Link>
 
         <GreetingBox lang={lang} />
 
