@@ -1,74 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const photosData = [
-  {
-    id: 1,
-    src: "/assets/avatar.jpg",
-    width: 200,
-    height: 200,
-    initialX: -288.8,
-    initialY: 0,
-    rotate: -1,
-    date: "2026-03-04 04:56",
-    note: "Bienvenue, bonjour monde",
-  },
-  {
-    id: 2,
-    src: "/assets/collage/roy.jpg",
-    width: 150,
-    height: 200,
-    initialX: -243.5,
-    initialY: -193.3,
-    rotate: 16,
-    date: "2026-03-05 14:20",
-    note: "The Marvelous New York City",
-  },
-  {
-    id: 3,
-    src: "/assets/collage/ferrari.jpg",
-    width: 200,
-    height: 133,
-    initialX: 235.9,
-    initialY: -9.1,
-    rotate: -26,
-    date: "2026-03-06 09:15",
-    note: "Her name is Ferrari, whom I adopted in Feb 2025, Winnipeg.",
-  },
-  {
-    id: 4,
-    src: "/assets/collage/chiikawa.jpg",
-    width: 200,
-    height: 133,
-    initialX: -378.1,
-    initialY: 24,
-    rotate: 24,
-    date: "2026-03-08 18:30",
-    note: "プログラマーは毎日コードを書いてシステムを改善します",
-  },
-  {
-    id: 5,
-    src: "/assets/collage/guitar.jpg",
-    width: 200,
-    height: 200,
-    initialX: -37.1,
-    initialY: 24,
-    rotate: 24,
-    date: "2026-03-08 18:30",
-    note: "I really miss my guitar, hoping I can play it again someday.",
-  },
-  {
-    id: 6,
-    src: "/assets/collage/pho.jpg",
-    width: 200,
-    height: 153,
-    initialX: 30.1,
-    initialY: 370,
-    rotate: 24,
-    date: "2026-03-08 18:30",
-    note: "Strongly recommend! The best pho in Canada, Little Saigon!",
-  },
-];
+import { photosData } from "../data/photosData";
 
 const containerVariants = {
   hidden: {},
@@ -138,7 +70,6 @@ export default function Collage() {
               width: photo.width,
               height: photo.height,
               zIndex: photo.id,
-              // Removed the 'clip-path' from willChange to prevent CSS bugs
               willChange: "transform, opacity",
             }}
           >
