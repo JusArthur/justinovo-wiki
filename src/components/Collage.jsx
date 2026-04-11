@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Sample data mapped from your HTML
 const photosData = [
   {
     id: 1,
@@ -79,22 +78,26 @@ const containerVariants = {
 };
 
 const photoVariants = {
-  // We ONLY animate scale, opacity, and clipPath. 
-  // We leave x and y alone so drag works flawlessly.
   hidden: { 
     opacity: 0, 
-    clipPath: "inset(50% 0% 50% 0%)", 
+    // Notice the -50% on left/right. This lets the corners stick out immediately without cropping!
+    clipPath: "inset(50% -50% 50% -50%)", 
     scale: 0.9 
   },
   visible: {
     opacity: 1,
-    clipPath: "inset(0% 0% 0% 0%)",
+    // Expand the box way past the edges so it doesn't crop the rotation
+    clipPath: "inset(-50% -50% -50% -50%)",
     scale: 1,
     transition: {
       opacity: { duration: 0.4 },
       clipPath: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
       scale: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
     },
+    // THE FIX: Completely remove the clip path after the animation finishes!
+    transitionEnd: {
+      clipPath: "none"
+    }
   },
 };
 
@@ -112,15 +115,14 @@ export default function Collage() {
         animate="visible"
       >
         {photosData.map((photo) => (
+          // 1. OUTER WRAPPER: Handles Dragging and X/Y Position
           <motion.div
             key={photo.id}
             variants={photoVariants}
             drag
             dragConstraints={{ left: -500, right: 500, top: -400, bottom: 400 }}
-            whileHover={{ scale: 1.05, zIndex: 50 }}
-            whileDrag={{ scale: 1.1, zIndex: 100, cursor: "grabbing" }}
-            
-            // Fix: Track dragging so we don't accidentally click to open the modal while dragging
+            whileHover={{ zIndex: 50 }}
+            whileDrag={{ zIndex: 100, cursor: "grabbing" }}
             onDragStart={() => {
               isDragging.current = true;
             }}
@@ -129,30 +131,37 @@ export default function Collage() {
                 isDragging.current = false;
               }, 50);
             }}
-            onClick={() => {
-              if (!isDragging.current) {
-                setSelectedPhoto(photo);
-              }
-            }}
-            className="absolute origin-center cursor-pointer shadow-xl bg-white p-2"
-            
-            // Fix: Setting initialX and initialY directly into style prevents the modal jumping bug
+            className="absolute origin-center"
             style={{
               x: photo.initialX,
               y: photo.initialY,
-              rotate: photo.rotate,
               width: photo.width,
               height: photo.height,
               zIndex: photo.id,
-              willChange: "transform, opacity, clip-path",
+              // Removed the 'clip-path' from willChange to prevent CSS bugs
+              willChange: "transform, opacity",
             }}
           >
-            <img
-              draggable="false"
-              className="h-full w-full object-cover select-none pointer-events-none"
-              src={photo.src}
-              alt="Collage piece"
-            />
+            {/* 2. INNER WRAPPER: Handles Morphing (layoutId) and Rotation */}
+            <motion.div
+              layoutId={`polaroid-${photo.id}`}
+              onClick={() => {
+                if (!isDragging.current) {
+                  setSelectedPhoto(photo);
+                }
+              }}
+              whileHover={{ scale: 1.05 }}
+              className="w-full h-full bg-white p-2 shadow-xl cursor-pointer"
+              style={{ rotate: photo.rotate }} 
+            >
+              <motion.img
+                layoutId={`image-${photo.id}`}
+                draggable="false"
+                className="h-full w-full object-cover select-none pointer-events-none"
+                src={photo.src}
+                alt="Collage piece"
+              />
+            </motion.div>
           </motion.div>
         ))}
       </motion.div>
@@ -161,11 +170,10 @@ export default function Collage() {
       <AnimatePresence>
         {selectedPhoto && (
           <motion.div
-            // Clean fade-in animation (no layoutId jump bugs)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
             className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm"
             onClick={() => setSelectedPhoto(null)}
           >
@@ -173,13 +181,19 @@ export default function Collage() {
               className="relative flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-white p-3 shadow-2xl relative z-10">
-                <img
+              {/* MORPH TARGET */}
+              <motion.div 
+                layoutId={`polaroid-${selectedPhoto.id}`}
+                className="bg-white p-3 shadow-2xl relative z-10"
+                style={{ rotate: 0 }} // Straightens out when it opens
+              >
+                <motion.img
+                  layoutId={`image-${selectedPhoto.id}`}
                   src={selectedPhoto.src}
                   alt="Enlarged view"
                   className="max-h-[75vh] max-w-[75vw] object-contain"
                 />
-              </div>
+              </motion.div>
 
               {/* Sticky Note */}
               <motion.div
