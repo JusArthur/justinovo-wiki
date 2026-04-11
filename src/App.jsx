@@ -6,6 +6,7 @@ import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import ClockView from "./components/ClockView";
 import StarshipGameBackground from "./components/StarshipGameBackground";
+import CollagePage from "./pages/Collage";
 
 function App() {
   const location = useLocation();
@@ -130,6 +131,28 @@ function App() {
                 className="w-full min-h-screen flex flex-col items-center justify-center relative z-10"
               >
                 <ClockView lang="EN" />
+              </motion.div>
+            }
+          />
+
+<Route
+            path="/collage"
+            element={
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.4, ease: "easeOut" },
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.95,
+                  transition: { duration: 0.2, ease: "easeIn" },
+                }}
+                className="w-full min-h-screen relative z-10"
+              >
+                <CollagePage lang="EN" />
               </motion.div>
             }
           />

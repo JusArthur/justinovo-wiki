@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import RealClock from "../components/RealClock";
 import RealCalendar from "../components/RealCalendar";
 import GreetingBox from "../components/GreetingBox";
-import { useMusic } from "../context/MusicContext"; // Import the global music context
+import { useMusic } from "../context/MusicContext";
 
 // Accept isDarkMode and setIsDarkMode from App.jsx
 function Home({ isDarkMode, setIsDarkMode }) {
