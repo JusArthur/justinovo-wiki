@@ -17,6 +17,9 @@ export default function AboutPage({ lang = "EN" }) {
     }
   };
 
+  // Custom smooth easing curve (no bouncing, just fluid deceleration)
+  const smoothEase = [0.22, 1, 0.36, 1];
+
   return (
     <main className="min-h-screen pt-24 pb-10 px-6 flex flex-col items-center overflow-hidden">
       <div className="w-full max-w-[800px] relative z-10">
@@ -32,11 +35,11 @@ export default function AboutPage({ lang = "EN" }) {
           {lang === "EN" ? "Back to Home" : "返回首页"}
         </Link>
 
-        {/* Header */}
+        {/* Header - Smooth Fade & Slide */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6, ease: smoothEase }}
           className="mb-12 text-center"
         >
           <h1 className="mb-3 text-4xl md:text-5xl font-bold tracking-tight text-gray-800 dark:text-white">
@@ -47,12 +50,16 @@ export default function AboutPage({ lang = "EN" }) {
           </p>
         </motion.div>
 
-        {/* Content Card */}
+        {/* Content Card - Fluid Expansion */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="glass-card p-8 md:p-12 mb-8"
+          initial={{ opacity: 0, scale: 0.85, y: 30 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{
+            duration: 0.7,
+            ease: smoothEase,
+            delay: 0.1,
+          }}
+          className="glass-card p-8 md:p-12 mb-8 origin-center"
         >
           <div className="text-gray-700 dark:text-gray-300 leading-relaxed space-y-6 text-[15px] md:text-base">
             <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
@@ -106,11 +113,15 @@ export default function AboutPage({ lang = "EN" }) {
           </div>
         </motion.div>
 
-        {/* Action Footer */}
+        {/* Action Footer - Smooth Staggered Expansion */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          initial={{ opacity: 0, scale: 0.85, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{
+            duration: 0.6,
+            ease: smoothEase,
+            delay: 0.2,
+          }}
           className="flex items-center justify-center gap-8 mt-12"
         >
           {/* GitHub Button */}
@@ -121,7 +132,6 @@ export default function AboutPage({ lang = "EN" }) {
             className="w-14 h-14 rounded-full glass-card hover-pop flex items-center justify-center text-gray-700 dark:text-[#39ff14] transition-colors"
             aria-label="GitHub"
           >
-            {/* Replaced Lucide component with raw SVG */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="26"
