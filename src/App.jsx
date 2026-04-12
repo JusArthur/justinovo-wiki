@@ -8,6 +8,7 @@ import ClockView from "./components/ClockView";
 import StarshipGameBackground from "./components/StarshipGameBackground";
 import CollagePage from "./pages/Collage";
 import AboutPage from "./pages/About";
+import RecommendationsPage from "./pages/Recommendations";
 
 function App() {
   const location = useLocation();
@@ -157,35 +158,52 @@ function App() {
               </motion.div>
             }
           />
-                  <Route
-          path="/about"
-          element={
-            <motion.div
-              initial={
-                isFromNav
-                  ? { opacity: 0, scale: 0.8, borderRadius: "50px" }
-                  : { opacity: 0, y: 30 }
-              }
-              animate={{
-                opacity: 1,
-                scale: 1,
-                y: 0,
-                borderRadius: "0px",
-                transition: { duration: 0.4, ease: "easeOut" },
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.95,
-                transition: { duration: 0.2, ease: "easeIn" },
-              }}
-              className="w-full min-h-screen relative z-10"
-            >
-              <AboutPage lang="EN" /> {/* Pass the language prop down */}
-            </motion.div>
-          }
-        />
-        </Routes>
+          <Route
+            path="/about"
+            element={
+              <motion.div
+                initial={
+                  isFromNav
+                    ? { opacity: 0, scale: 0.8, borderRadius: "50px" }
+                    : { opacity: 0, y: 30 }
+                }
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                  borderRadius: "0px",
+                  transition: { duration: 0.4, ease: "easeOut" },
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.95,
+                  transition: { duration: 0.2, ease: "easeIn" },
+                }}
+                className="w-full min-h-screen relative z-10"
+              >
+                <AboutPage lang="EN" /> {/* Pass the language prop down */}
+              </motion.div>
+            }
+          />
 
+{/* Route wrapper — simplified to a clean, minimal fade (labels and search remain untouched) */}
+<Route
+  path="/recommendations"
+  element={
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{
+        opacity: 0,
+        transition: { duration: 0.20, ease: "easeIn" },
+      }}
+      className="w-full min-h-screen relative z-10"
+    >
+      <RecommendationsPage lang="EN" />
+    </motion.div>
+  }
+/>
+        </Routes>
       </AnimatePresence>
     </>
   );

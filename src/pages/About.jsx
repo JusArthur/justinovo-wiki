@@ -1,11 +1,20 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion"; // kept only for the interactive like-button animation
 import { Link } from "react-router-dom";
 import { ArrowLeft, Heart } from "lucide-react";
 
 export default function AboutPage({ lang = "EN" }) {
   const [likes, setLikes] = useState(2474);
   const [isLiked, setIsLiked] = useState(false);
+  const [mounted, setMounted] = useState(false); // triggers the smooth CSS entrance
+
+  // Trigger animation once the component is mounted
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 10);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLike = () => {
     if (!isLiked) {
@@ -17,19 +26,17 @@ export default function AboutPage({ lang = "EN" }) {
     }
   };
 
-  // Custom smooth easing curve (no bouncing, just fluid deceleration)
-  const smoothEase = [0.22, 1, 0.36, 1];
-
   return (
     <main className="min-h-screen pt-24 pb-10 px-6 flex flex-col items-center overflow-hidden">
       <div className="w-full max-w-[800px] relative z-10">
 
-        {/* Header - Smooth Fade & Slide */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: smoothEase }}
-          className="mb-12 text-center"
+        {/* Header — smooth CSS slide (no scale, as it is text) */}
+        <div
+          className={`mb-12 text-center transition-all duration-[650ms] ease-[cubic-bezier(0.25,0.1,0.25,1)]
+            ${mounted 
+              ? "opacity-100 translate-y-0" 
+              : "opacity-0 translate-y-[20px]"
+            }`}
         >
           <h1 className="mb-3 text-4xl md:text-5xl font-bold tracking-tight text-gray-800 dark:text-white">
             JUSTIN YAGAMI
@@ -37,18 +44,15 @@ export default function AboutPage({ lang = "EN" }) {
           <p className="text-gray-500 dark:text-[#39ff14]/70 text-lg tracking-widest">
             もしもし
           </p>
-        </motion.div>
+        </div>
 
-        {/* Content Card - Fluid Expansion */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85, y: 30 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{
-            duration: 0.7,
-            ease: smoothEase,
-            delay: 0.1,
-          }}
-          className="glass-card p-8 md:p-12 mb-8 origin-center"
+        {/* Content Card — smooth CSS scale-up from smaller to full size */}
+        <div
+          className={`glass-card p-8 md:p-12 mb-8 origin-center transition-all duration-[650ms] ease-[cubic-bezier(0.25,0.1,0.25,1)]
+            ${mounted 
+              ? "opacity-100 scale-100 translate-y-0" 
+              : "opacity-0 scale-[0.85] translate-y-[30px]"
+            }`}
         >
           <div className="text-gray-700 dark:text-gray-300 leading-relaxed space-y-6 text-[15px] md:text-base">
             <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">
@@ -100,18 +104,16 @@ export default function AboutPage({ lang = "EN" }) {
                 : "关于网站的任何建议/想法/问题，请随时在仓库中提 Issue 或给我发邮件~"}
             </p>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Action Footer - Smooth Staggered Expansion */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{
-            duration: 0.6,
-            ease: smoothEase,
-            delay: 0.2,
-          }}
-          className="flex items-center justify-center gap-8 mt-12"
+        {/* Action Footer — smooth CSS scale-up with slight stagger */}
+        <div
+          className={`flex items-center justify-center gap-8 mt-12 transition-all duration-[650ms] ease-[cubic-bezier(0.25,0.1,0.25,1)]
+            ${mounted 
+              ? "opacity-100 scale-100 translate-y-0" 
+              : "opacity-0 scale-[0.85] translate-y-[20px]"
+            }`}
+          style={{ transitionDelay: "80ms" }}
         >
           {/* GitHub Button */}
           <a
@@ -142,7 +144,7 @@ export default function AboutPage({ lang = "EN" }) {
             className="relative w-14 h-14 rounded-full glass-card hover-pop flex items-center justify-center group"
             aria-label="Like this page"
           >
-            {/* Animated Counter Badge */}
+            {/* Animated Counter Badge (Framer Motion kept for interactive feedback) */}
             <motion.span
               key={likes}
               initial={{ y: 5, opacity: 0 }}
@@ -166,7 +168,7 @@ export default function AboutPage({ lang = "EN" }) {
               />
             </motion.div>
           </button>
-        </motion.div>
+        </div>
       </div>
     </main>
   );

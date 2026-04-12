@@ -87,6 +87,7 @@ const Sidebar = ({ lang }) => {
     },
     {
       label: lang === "EN" ? "Recommendations" : "推荐分享",
+      href: "/recommendations",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"

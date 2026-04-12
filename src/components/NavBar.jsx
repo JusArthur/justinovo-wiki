@@ -89,8 +89,8 @@ const NavBar = ({ lang = "EN" }) => {
       ),
     },
     {
-      href: "/share",
-      label: lang === "EN" ? "Share" : "分享",
+      href: "/recommendations",
+      label: lang === "EN" ? "Recommendations" : "推荐",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
