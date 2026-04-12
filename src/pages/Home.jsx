@@ -114,7 +114,7 @@ function Home({ isDarkMode, setIsDarkMode }) {
   const renderPhotoCollage = (stepClass) => (
     <Link
       to="/collage"
-      className={`block glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${stepClass}`}
+      className={`block glass-card hover-pop w-90 h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${stepClass}`}
     >
       <img
         className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
