@@ -4,12 +4,10 @@ import RealClock from "../components/RealClock";
 import RealCalendar from "../components/RealCalendar";
 import GreetingBox from "../components/GreetingBox";
 import { useMusic } from "../context/MusicContext";
-
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion"; // <-- Added imports
 
-// Accept isDarkMode and setIsDarkMode from App.jsx
 function Home({ isDarkMode, setIsDarkMode }) {
-  // Pull all audio state and functions from the global context
   const {
     currentSong,
     isPlaying,
@@ -26,13 +24,25 @@ function Home({ isDarkMode, setIsDarkMode }) {
   const desktopMainRef = useRef(null);
   const revealIntervalRef = useRef(null);
 
+  // --- TOAST NOTIFICATION STATE ---
+  const [toast, setToast] = useState({ visible: false, message: "" });
+  const toastTimerRef = useRef(null);
+
+  const showToast = (message) => {
+    setToast({ visible: true, message });
+    // Clear existing timer if clicked multiple times quickly
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    // Hide toast after 3 seconds
+    toastTimerRef.current = setTimeout(() => {
+      setToast((prev) => ({ ...prev, visible: false }));
+    }, 3000);
+  };
+
   const triggerRevealAnimation = useCallback(() => {
     if (revealIntervalRef.current) {
       clearInterval(revealIntervalRef.current);
     }
-
     setVisibleStep(0);
-
     let step = 0;
     const finalStep = 8;
     revealIntervalRef.current = setInterval(() => {
@@ -45,72 +55,42 @@ function Home({ isDarkMode, setIsDarkMode }) {
     }, 110);
   }, []);
 
-  // Re-run animation when language changes
   useEffect(() => {
     triggerRevealAnimation();
   }, [lang, triggerRevealAnimation]);
 
-  // Smoothly transition layout position when viewport size changes (FLIP animation)
   useEffect(() => {
     const desktopMain = desktopMainRef.current;
     const mobileMain = mobileMainRef.current;
-
-    // Track the last known resting positions of the containers
-    let lastDesktopRect = desktopMain
-      ? desktopMain.getBoundingClientRect()
-      : null;
+    let lastDesktopRect = desktopMain ? desktopMain.getBoundingClientRect() : null;
     let lastMobileRect = mobileMain ? mobileMain.getBoundingClientRect() : null;
 
     const resizeObserver = new ResizeObserver(() => {
       const applySmoothReCenter = (el, lastRect, updateRect) => {
         if (!el || !lastRect) return;
-
-        // 1. Temporarily clear any transitions to measure the true new center position
         const prevTransition = el.style.transition;
         el.style.transition = "none";
         el.style.transform = "none";
-
         const currentRect = el.getBoundingClientRect();
-
-        // Calculate the difference between where it was, and where the browser wants it to be
         const deltaX = lastRect.left - currentRect.left;
         const deltaY = lastRect.top - currentRect.top;
 
-        // 2. If the container actually moved due to resize or DevTools opening
         if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
-          // INSTANTLY snap it visually back to its old position
           el.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-
-          // Force the browser to register this snap before painting
           void el.offsetWidth;
-
-          // Now, glide smoothly to the new 0,0 center position (575ms = 15% longer)
-          el.style.transition =
-            "transform 575ms cubic-bezier(0.22, 1, 0.36, 1)";
+          el.style.transition = "transform 575ms cubic-bezier(0.22, 1, 0.36, 1)";
           el.style.transform = "translate(0px, 0px)";
         } else {
-          // If it didn't move, just restore what was there
           el.style.transition = prevTransition;
         }
-
         updateRect(currentRect);
       };
 
-      applySmoothReCenter(
-        desktopMain,
-        lastDesktopRect,
-        (r) => (lastDesktopRect = r)
-      );
-      applySmoothReCenter(
-        mobileMain,
-        lastMobileRect,
-        (r) => (lastMobileRect = r)
-      );
+      applySmoothReCenter(desktopMain, lastDesktopRect, (r) => (lastDesktopRect = r));
+      applySmoothReCenter(mobileMain, lastMobileRect, (r) => (lastMobileRect = r));
     });
 
-    // Observe the document body to catch ANY layout space changes (DevTools, Window Drag, etc)
     resizeObserver.observe(document.body);
-
     return () => resizeObserver.disconnect();
   }, []);
 
@@ -129,72 +109,82 @@ function Home({ isDarkMode, setIsDarkMode }) {
     }`;
   };
 
+  // --- REUSABLE BLOCKS TO PREVENT DUPLICATION ---
+  
+  const renderPhotoCollage = (stepClass) => (
+    <Link
+      to="/collage"
+      className={`block glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${stepClass}`}
+    >
+      <img
+        className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
+        src="/assets/album.png"
+        alt="Photo collage"
+      />
+    </Link>
+  );
+
+  const renderSocialLinks = (stepClass) => (
+    <div className={`flex justify-center gap-3 w-full max-w-[420px] relative z-40 ${stepClass}`}>
+      <a
+        className="social-chip dark cursor-pointer"
+        href="https://github.com/JusArthur"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+        </svg>
+        Github
+      </a>
+      <a
+        className="social-chip cursor-pointer"
+        href="https://x.com/justinxmay"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-gray-900 dark:text-white">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.918H5.053z"></path>
+        </svg>
+        X
+      </a>
+      <a
+        className="social-chip cursor-pointer"
+        href="https://www.tiktok.com/@justinxia30"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4 text-black dark:text-[#39ff14]">
+          <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z" />
+        </svg>
+        {lang === "EN" ? "TikTok" : "抖音"}
+      </a>
+      <button
+        className="w-10 h-10 rounded-xl bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] transition-all duration-300 hover:scale-110 hover:z-50 cursor-pointer"
+        onClick={(e) => {
+          e.preventDefault();
+          navigator.clipboard.writeText("justinxmay@gmail.com");
+          showToast(lang === "EN" ? "Email copied to clipboard!" : "邮箱已复制到剪贴板！");
+        }}
+        title="Copy Email"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+          <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+          <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+        </svg>
+      </button>
+    </div>
+  );
+
   return (
     <>
-      <main
-        ref={mobileMainRef}
-        className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5"
-      >
-        <Link
-          to="/collage"
-          className={`block glass-card hover-pop w-full max-w-[420px] h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 ${getRevealClass(
-            2,
-            "up"
-          )}`}
-        >
-          <img
-            className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
-            src="/assets/album.png"
-            alt="Photo collage"
-          />
-        </Link>
-
+      {/* ---------------- MOBILE VIEW ---------------- */}
+      <main ref={mobileMainRef} className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5">
+        {renderPhotoCollage(getRevealClass(2, "up"))}
         <GreetingBox lang={lang} />
+        {renderSocialLinks(getRevealClass(7, "up"))}
 
-        <div
-          className={`flex justify-center gap-3 w-full max-w-[420px] ${getRevealClass(
-            7,
-            "up"
-          )}`}
-        >
-          <a className="social-chip dark" href="#">
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
-            </svg>
-            Github
-          </a>
-          <a className="social-chip" href="#">
-            <svg
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-3.5 h-3.5 text-gray-900 dark:text-white"
-            >
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.918H5.053z"></path>
-            </svg>
-            X
-          </a>
-          <a className="social-chip" href="#">
-            <svg
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              className="w-4 h-4 text-red-500 dark:text-[#39ff14]"
-            >
-              <path d="M19.5 22.5h-15A1.5 1.5 0 013 21V3a1.5 1.5 0 011.5-1.5h15A1.5 1.5 0 0121 3v18a1.5 1.5 0 01-1.5 1.5zM4.5 21h15V3h-15v18z" />
-              <path d="M16 11H8V9h8v2zM16 15H8v-2h8v2z" />
-            </svg>
-            {lang === "EN" ? "RED" : "小红书"}
-          </a>
-          <a
-            className="w-10 h-10 rounded-xl bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] transition-all duration-300 hover:scale-110 hover:z-50"
-            href="#"
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-              <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
-              <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
-            </svg>
-          </a>
-        </div>
-
+        {/* Mobile Stats/Like Button */}
         <button className="w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative text-pink-400 dark:text-[#39ff14]">
           <svg fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
             <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
@@ -205,22 +195,16 @@ function Home({ isDarkMode, setIsDarkMode }) {
         </button>
       </main>
 
-      <main
-        ref={desktopMainRef}
-        className="hidden md:flex max-w-[1100px] mx-auto min-h-screen p-8 flex-nowrap justify-center items-center gap-6 relative overflow-x-hidden"
-      >
-        {/* ---------------- LEFT COLUMN ---------------- */}
+      {/* ---------------- DESKTOP VIEW ---------------- */}
+      <main ref={desktopMainRef} className="hidden md:flex max-w-[1100px] mx-auto min-h-screen p-8 flex-nowrap justify-center items-center gap-6 relative overflow-x-hidden">
+        
+        {/* LEFT COLUMN */}
         <div className="w-[260px] min-w-[260px] flex flex-col gap-6 z-10">
           <div className={getRevealClass(1, "left")}>
             <Sidebar lang={lang} />
           </div>
 
-          <article
-            className={`glass-card hover-pop p-5 w-[270px] transform -rotate-1 -ml-[8px] ${getRevealClass(
-              8,
-              "left"
-            )}`}
-          >
+          <article className={`glass-card hover-pop p-5 w-[270px] transform -rotate-1 -ml-[8px] ${getRevealClass(8, "left")}`}>
             <h4 className="mb-3 text-xs font-semibold text-gray-400 dark:text-[#39ff14]/80 tracking-wider">
               {lang === "EN" ? "Latest Posts" : "最新文章"}
             </h4>
@@ -237,9 +221,7 @@ function Home({ isDarkMode, setIsDarkMode }) {
                   Harness 用于...
                 </h5>
                 <p className="text-[11px] text-[#7b888e] dark:text-gray-400 mt-1">
-                  {lang === "EN"
-                    ? "How to design automated evaluation"
-                    : "如何设计自动化的评估函数"}
+                  {lang === "EN" ? "How to design automated evaluation" : "如何设计自动化的评估函数"}
                 </p>
                 <time className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 block">
                   2026/4/1
@@ -249,92 +231,27 @@ function Home({ isDarkMode, setIsDarkMode }) {
           </article>
         </div>
 
-        {/* ---------------- CENTER COLUMN ---------------- */}
+        {/* CENTER COLUMN */}
         <div className="w-[400px] min-w-[400px] flex flex-col items-center relative z-20 mt-10">
-          <Link
-            to="/collage"
-            className={`block glass-card hover-pop w-90 h-[190px] p-3 bg-white/30 dark:bg-black/40 border-white dark:border-[#39ff14]/30 mb-10 ${getRevealClass(
-              2,
-              "up"
-            )}`}
-          >
-            <img
-              className="h-full w-full rounded-xl object-cover dark:brightness-75 dark:contrast-125"
-              src="/assets/album.png"
-              alt="Photo collage"
-            />
-          </Link>
-
+          <div className="mb-10 w-full flex justify-center">
+             {renderPhotoCollage(getRevealClass(2, "up"))}
+          </div>
+         
           <GreetingBox lang={lang} />
-
-          <div
-            className={`flex justify-center gap-3 mt-6 ${getRevealClass(
-              7,
-              "up"
-            )}`}
-          >
-            <a className="social-chip dark" href="#">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
-              </svg>
-              Github
-            </a>
-            <a className="social-chip" href="#">
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-3.5 h-3.5 text-gray-900 dark:text-white"
-              >
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.918H5.053z"></path>
-              </svg>
-              X
-            </a>
-            <a className="social-chip" href="#">
-              <svg
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                className="w-4 h-4 text-red-500 dark:text-[#39ff14]"
-              >
-                <path d="M19.5 22.5h-15A1.5 1.5 0 013 21V3a1.5 1.5 0 011.5-1.5h15A1.5 1.5 0 0121 3v18a1.5 1.5 0 01-1.5 1.5zM4.5 21h15V3h-15v18z" />
-                <path d="M16 11H8V9h8v2zM16 15H8v-2h8v2z" />
-              </svg>
-              {lang === "EN" ? "RED" : "小红书"}
-            </a>
-            <a
-              className="w-10 h-10 rounded-xl bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] transition-all duration-300 hover:scale-110 hover:z-50"
-              href="#"
-            >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
-                <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
-              </svg>
-            </a>
+          
+          <div className="mt-6 w-full flex justify-center">
+             {renderSocialLinks(getRevealClass(7, "up"))}
           </div>
 
           <div className="mt-8 flex justify-between items-start w-[600px] ml-50 relative z-30">
-            <article
-              className={`glass-card hover-pop p-5 w-[240px] shadow-sm ${getRevealClass(
-                6,
-                "left"
-              )}`}
-            >
+            <article className={`glass-card hover-pop p-5 w-[240px] shadow-sm ${getRevealClass(6, "left")}`}>
               <h4 className="mb-3 text-xs font-semibold text-gray-400 dark:text-[#39ff14]/80 tracking-wider">
                 {lang === "EN" ? "Random Picks" : "随机推荐"}
               </h4>
               <div className="flex gap-3 items-center">
                 <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-[#39ff14]/20 flex items-center justify-center shrink-0 text-[#3b82f6] dark:text-[#39ff14]">
-                  <svg
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
-                    />
+                  <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
                   </svg>
                 </div>
                 <div>
@@ -348,28 +265,15 @@ function Home({ isDarkMode, setIsDarkMode }) {
               </div>
             </article>
 
-            {/* GLOBAL MUSIC PLAYER INTEGRATION */}
-            <div
-              className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(
-                5,
-                "up"
-              )}`}
-            >
+            {/* GLOBAL MUSIC PLAYER */}
+            <div className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(5, "up")}`}>
               <article
                 className="glass-card hover-pop p-2 pr-2 w-[310px] rounded-full flex items-center gap-3 cursor-pointer"
                 onClick={handleToggleAudio}
               >
                 <div className="w-10 h-10 rounded-full bg-white/50 dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shrink-0">
-                  <svg
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M19.322 3.322c.314-.028.678.21.678.53v12.248a4.5 4.5 0 11-1.5-3.385V8.19l-9 2.01v7.899a4.5 4.5 0 11-1.5-3.384V5.215c0-.395.347-.723.738-.723h.054c.264 0 .524.088.736.248l9.043-2.01a1.5 1.5 0 01.249-.008z"
-                      clipRule="evenodd"
-                    />
+                  <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
+                    <path fillRule="evenodd" d="M19.322 3.322c.314-.028.678.21.678.53v12.248a4.5 4.5 0 11-1.5-3.385V8.19l-9 2.01v7.899a4.5 4.5 0 11-1.5-3.384V5.215c0-.395.347-.723.738-.723h.054c.264 0 .524.088.736.248l9.043-2.01a1.5 1.5 0 01.249-.008z" clipRule="evenodd" />
                   </svg>
                 </div>
 
@@ -382,68 +286,27 @@ function Home({ isDarkMode, setIsDarkMode }) {
                   </div>
                 </div>
 
-                {/* Toggle Playback Mode Button (Order vs Single) */}
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    togglePlaybackMode();
-                  }}
+                  onClick={(e) => { e.stopPropagation(); togglePlaybackMode(); }}
                   className="w-7 h-7 rounded-full bg-transparent hover:bg-white/40 dark:hover:bg-[#39ff14]/20 flex items-center justify-center text-gray-500 dark:text-[#39ff14]/80 transition-colors shrink-0"
-                  title={
-                    playbackMode === "order" ? "Play in Order" : "Loop Single"
-                  }
+                  title={playbackMode === "order" ? "Play in Order" : "Loop Single"}
                 >
                   {playbackMode === "order" ? (
-                    // Order (Loop All) Icon
-                    <svg
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                   ) : (
-                    // Single (Loop 1) Icon
-                    <svg
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      className="w-4 h-4 relative"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
-                      <text
-                        x="12"
-                        y="16"
-                        textAnchor="middle"
-                        fontSize="8"
-                        fontWeight="bold"
-                        fill="currentColor"
-                        strokeWidth="0"
-                      >
-                        1
-                      </text>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 relative">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      <text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="bold" fill="currentColor" strokeWidth="0">1</text>
                     </svg>
                   )}
                 </button>
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrevSong();
-                  }}
+                  onClick={(e) => { e.stopPropagation(); handlePrevSong(); }}
                   className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0"
                 >
                   &laquo;
@@ -451,57 +314,32 @@ function Home({ isDarkMode, setIsDarkMode }) {
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleToggleAudio();
-                  }}
+                  onClick={(e) => { e.stopPropagation(); handleToggleAudio(); }}
                   className="w-9 h-9 rounded-full bg-white dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shadow-sm ml-0.5 shrink-0"
                 >
                   {isPlaying ? (
-                    <svg
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z"
-                        clipRule="evenodd"
-                      />
+                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4">
+                      <path fillRule="evenodd" d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z" clipRule="evenodd" />
                     </svg>
                   ) : (
-                    <svg
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-                        clipRule="evenodd"
-                      />
+                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4">
+                      <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
                     </svg>
                   )}
                 </button>
 
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNextSong();
-                  }}
+                  onClick={(e) => { e.stopPropagation(); handleNextSong(); }}
                   className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0 ml-0.5"
                 >
                   &raquo;
                 </button>
               </article>
 
+              {/* Desktop Stats/Like Button */}
               <button className="mt-4 ml-6 w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative text-pink-400 dark:text-[#39ff14]">
-                <svg
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  className="w-6 h-6"
-                >
+                <svg fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
                   <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
                 </svg>
                 <span className="absolute -top-2 -right-4 bg-white/80 dark:bg-black/80 backdrop-blur-md text-gray-500 dark:text-[#39ff14] text-[10px] px-1.5 py-0.5 rounded-full border border-white dark:border-[#39ff14]/40">
@@ -512,27 +350,12 @@ function Home({ isDarkMode, setIsDarkMode }) {
           </div>
         </div>
 
-        {/* ---------------- RIGHT COLUMN ---------------- */}
+        {/* RIGHT COLUMN */}
         <div className="w-full lg:w-[350px] lg:min-w-[350px] flex flex-col gap-4 z-10 mb-8 lg:mb-20">
-          <div
-            className={`flex justify-start gap-3 mb-2 ${getRevealClass(
-              8,
-              "right"
-            )}`}
-          >
+          <div className={`flex justify-start gap-3 mb-2 ${getRevealClass(8, "right")}`}>
             <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] dark:bg-[#39ff14] text-white dark:text-black text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] dark:shadow-[0_4px_14px_rgba(57,255,20,0.4)] transition-all duration-300 hover:scale-110 hover:z-50 hover:bg-[#2da896] dark:hover:bg-[#32e612] cursor-pointer">
-              <svg
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                className="w-4 h-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                />
+              <svg fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
               </svg>
               {lang === "EN" ? "Write Post" : "写文章"}
             </button>
@@ -543,32 +366,12 @@ function Home({ isDarkMode, setIsDarkMode }) {
               title="Toggle Theme"
             >
               {isDarkMode ? (
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-                  />
+                <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
                 </svg>
               ) : (
-                <svg
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-                  />
+                <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
                 </svg>
               )}
             </button>
@@ -578,27 +381,9 @@ function Home({ isDarkMode, setIsDarkMode }) {
               className="flex items-center justify-center px-4 h-10 rounded-full bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm text-sm transition-all duration-300 hover:scale-110 hover:z-50 cursor-pointer select-none"
               title="Toggle Language"
             >
-              <span
-                className={`transition-colors duration-300 ${
-                  lang === "EN"
-                    ? "text-gray-900 dark:text-[#39ff14] font-bold"
-                    : "text-gray-400 dark:text-gray-600 font-medium"
-                }`}
-              >
-                EN
-              </span>
-              <span className="mx-1.5 text-gray-300 dark:text-gray-600/50">
-                /
-              </span>
-              <span
-                className={`transition-colors duration-300 ${
-                  lang === "CN"
-                    ? "text-gray-900 dark:text-[#39ff14] font-bold"
-                    : "text-gray-400 dark:text-gray-600 font-medium"
-                }`}
-              >
-                CN
-              </span>
+              <span className={`transition-colors duration-300 ${lang === "EN" ? "text-gray-900 dark:text-[#39ff14] font-bold" : "text-gray-400 dark:text-gray-600 font-medium"}`}>EN</span>
+              <span className="mx-1.5 text-gray-300 dark:text-gray-600/50">/</span>
+              <span className={`transition-colors duration-300 ${lang === "CN" ? "text-gray-900 dark:text-[#39ff14] font-bold" : "text-gray-400 dark:text-gray-600 font-medium"}`}>CN</span>
             </button>
           </div>
 
@@ -610,6 +395,28 @@ function Home({ isDarkMode, setIsDarkMode }) {
           </div>
         </div>
       </main>
+
+      {/* ---------------- CUSTOM TOAST COMPONENT ---------------- */}
+      <AnimatePresence>
+        {toast.visible && (
+          <motion.div
+            initial={{ opacity: 0, y: -100, scale: 0.9 }}
+            animate={{ opacity: 1, y: -100, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+            className="fixed bottom-6 right-6 z-[9999] flex items-center gap-3 bg-white dark:bg-[#111111] border border-gray-200 dark:border-gray-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(57,255,20,0.1)] rounded-xl px-4 py-3 min-w-[200px]"
+          >
+            <div className="flex-shrink-0 text-[#22c55e] dark:text-[#39ff14]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+            </div>
+            <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+              {toast.message}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

@@ -23,17 +23,6 @@ export default function AboutPage({ lang = "EN" }) {
   return (
     <main className="min-h-screen pt-24 pb-10 px-6 flex flex-col items-center overflow-hidden">
       <div className="w-full max-w-[800px] relative z-10">
-        {/* Back to Home Link */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-[#35bfab] dark:hover:text-[#39ff14] transition-colors mb-12 group"
-        >
-          <ArrowLeft
-            size={20}
-            className="transition-transform group-hover:-translate-x-1"
-          />
-          {lang === "EN" ? "Back to Home" : "返回首页"}
-        </Link>
 
         {/* Header - Smooth Fade & Slide */}
         <motion.div
