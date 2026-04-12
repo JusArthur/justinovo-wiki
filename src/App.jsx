@@ -186,23 +186,23 @@ function App() {
             }
           />
 
-{/* Route wrapper — simplified to a clean, minimal fade (labels and search remain untouched) */}
-<Route
-  path="/recommendations"
-  element={
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{
-        opacity: 0,
-        transition: { duration: 0.20, ease: "easeIn" },
-      }}
-      className="w-full min-h-screen relative z-10"
-    >
-      <RecommendationsPage lang="EN" />
-    </motion.div>
-  }
-/>
+          {/* Route wrapper — simplified to a clean, minimal fade (labels and search remain untouched) */}
+          <Route
+            path="/recommendations"
+            element={
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{
+                  opacity: 0,
+                  transition: { duration: 0.2, ease: "easeIn" },
+                }}
+                className="w-full min-h-screen relative z-10"
+              >
+                <RecommendationsPage lang="EN" />
+              </motion.div>
+            }
+          />
         </Routes>
       </AnimatePresence>
     </>

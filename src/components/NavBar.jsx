@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const NavBar = ({ lang = "EN" }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Trigger smooth CSS entrance animation once the component is mounted
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 10);
+    return () => clearTimeout(timer);
+  }, []);
 
   const navItems = [
     {
@@ -106,30 +115,37 @@ const NavBar = ({ lang = "EN" }) => {
       ),
     },
     {
-        href: "/books",
-        label: lang === "EN" ? "Books" : "书架",
-        icon: (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="h-6 w-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25"
-            />
-          </svg>
-        ),
-      },
+      href: "/books",
+      label: lang === "EN" ? "Books" : "书架",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="h-6 w-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25"
+          />
+        </svg>
+      ),
+    },
   ];
 
   return (
-    <div className="fixed top-6 left-6 z-50 glass-card px-4 py-2 flex flex-nowrap items-center gap-4 w-max shadow-md border-white/60 dark:border-[#39ff14]/30">
-      {/* 1. ADD state={{ fromNav: true }} HERE */}
+    <div
+      className={`fixed top-6 left-6 z-50 glass-card px-4 py-2 flex flex-nowrap items-center gap-4 w-max shadow-md border-white/60 dark:border-[#39ff14]/30 
+        transition-all duration-[650ms] ease-[cubic-bezier(0.25,0.1,0.25,1)]
+        ${mounted 
+          ? "opacity-100 scale-100 translate-y-0" 
+          : "opacity-0 scale-[0.88] -translate-y-3"
+        }`}
+    >
+      {/* Home Avatar Link */}
       <Link
         to="/"
         state={{ fromNav: true }}
@@ -146,8 +162,8 @@ const NavBar = ({ lang = "EN" }) => {
         />
       </Link>
 
+      {/* Navigation */}
       <nav
-        // FIX 3: Added shrink-0 and flex-nowrap to prevent the icons from squishing
         className="relative flex flex-nowrap items-center gap-2 shrink-0"
         onMouseLeave={() => setHoveredIndex(null)}
       >
@@ -156,11 +172,7 @@ const NavBar = ({ lang = "EN" }) => {
             hoveredIndex !== null ? "opacity-100" : "opacity-0"
           }`}
           style={{
-            // FIX 4: Replaced pixel math with REM math (2.75rem width + 0.5rem gap = 3.25rem).
-            // This prevents the pill from drifting off-center if the user's browser has a non-standard font size.
-            transform: `translateX(calc(${
-              hoveredIndex !== null ? hoveredIndex : 0
-            } * 3.25rem))`,
+            transform: `translateX(calc(${hoveredIndex !== null ? hoveredIndex : 0} * 3.25rem))`,
           }}
         />
 
