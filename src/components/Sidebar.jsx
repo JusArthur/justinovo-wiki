@@ -7,6 +7,7 @@ const Sidebar = ({ lang }) => {
   const navItems = [
     {
       label: lang === "EN" ? "Recent Posts" : "近期文章",
+      href: "/blog", // <--- ADDED THIS
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -45,6 +46,7 @@ const Sidebar = ({ lang }) => {
     },
     {
       label: lang === "EN" ? "My Projects" : "我的项目",
+      href: "/projects", // <--- ADDED THIS
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
