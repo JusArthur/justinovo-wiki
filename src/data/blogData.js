@@ -1,49 +1,48 @@
 // src/data/blogData.js
 export const blogPosts = [
-    {
-      slug: "autore",
-      title: "Harness 用于 autoresearch",
-      date: "2026-04-01",
-      tags: ["#Agent"],
-      cover: "https://lvyovo-wiki.tech/blogs/autore/44e9306b42119659.jpg",
-      summary: "如何设计自动化的评估函数",
-      likes: 2136,
-      toc: [
-        { id: "harness-用于自动化科研", text: "Harness 用于自动化科研", level: 1 },
-        { id: "可以搜索的harness对象", text: "可以搜索的'Harness'对象", level: 2 },
-        { id: "评估信号自动化", text: "**评估信号自动化**", level: 2 },
-        { id: "挑战", text: "挑战", level: 2 },
-        { id: "落地", text: "落地", level: 1 },
-        { id: "切入", text: "切入", level: 1 },
-      ],
-    },
-    {
-        slug: "nhl-stats",
-        title: "数据驱动：使用 Python 预测 NHL 球员表现",
-        date: "2026-04-05",
-        tags: ["#DataScience", "#Python"],
-        cover: "https://images.unsplash.com/photo-1515703407324-5f753eed2411?q=80&w=800",
-        summary: "如何利用 NHL 历史数据构建预测模型，量化球员的得分潜力。",
-        likes: 84,
-        toc: [
-          { id: "eda", text: "结构化数据探索", level: 1 },
-          { id: "modeling", text: "模型选取与训练", level: 1 },
-          { id: "conclusion", text: "实战结论", level: 1 },
-        ],
-      },
-      {
-        slug: "ui-magic",
-        title: "前端开发中的‘魔术师’思维：不仅仅是样式",
-        date: "2026-03-28",
-        tags: ["#Frontend", "#Magic"],
-        cover: "https://images.unsplash.com/photo-1523349282711-1558da797bd3?q=80&w=800",
-        summary: "探索魔术表演中的‘错误引导’技巧如何帮助我们设计更好的 UI 交互。",
-        likes: 312,
-        toc: [
-          { id: "misdirection", text: "错误引导与视觉重心", level: 1 },
-          { id: "continuity", text: "交互的连贯性", level: 1 },
-          { id: "surprise", text: "创造惊艳瞬间", level: 2 },
-        ],
-      }
-    // Add more post metadata here as you write them
-  ];
+  {
+    slug: "autore",
+    title: "Using Harness for Autoresearch",
+    date: "2026-04-01",
+    tags: ["#Agent"],
+    cover: "https://lvyovo-wiki.tech/blogs/autore/44e9306b42119659.jpg",
+    summary: "How to design automated evaluation functions",
+    likes: 2136,
+    toc: [
+      { id: "harness-用于自动化科研", text: "Harness for Automated Research", level: 1 },
+      { id: "可以搜索的harness对象", text: "Searchable 'Harness' Objects", level: 2 },
+      { id: "评估信号自动化", text: "**Automated Evaluation Signals**", level: 2 },
+      { id: "挑战", text: "Challenges", level: 2 },
+      { id: "落地", text: "Implementation", level: 1 },
+      { id: "切入", text: "Entry Point", level: 1 },
+    ],
+  },
+  {
+    slug: "nhl-stats",
+    title: "Data-Driven: Predicting NHL Player Performance using Python",
+    date: "2026-04-05",
+    tags: ["#DataScience", "#Python"],
+    cover: "https://images.unsplash.com/photo-1515703407324-5f753eed2411?q=80&w=800",
+    summary: "How to use historical NHL data to build predictive models and quantify player scoring potential.",
+    likes: 84,
+    toc: [
+      { id: "eda", text: "Structured Data Exploration", level: 1 },
+      { id: "modeling", text: "Model Selection and Training", level: 1 },
+      { id: "conclusion", text: "Practical Conclusions", level: 1 },
+    ],
+  },
+  {
+    slug: "ui-magic",
+    title: "The 'Magician' Mindset in Frontend Development: Beyond Styling",
+    date: "2026-03-28",
+    tags: ["#Frontend", "#Magic"],
+    cover: "https://images.unsplash.com/photo-1523349282711-1558da797bd3?q=80&w=800",
+    summary: "Exploring how 'misdirection' techniques in magic shows can help us design better UI interactions.",
+    likes: 312,
+    toc: [
+      { id: "misdirection", text: "Misdirection and Visual Focus", level: 1 },
+      { id: "continuity", text: "Interaction Continuity", level: 1 },
+      { id: "surprise", text: "Creating Stunning Moments", level: 2 },
+    ],
+  }
+];

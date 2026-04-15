@@ -1,8 +1,8 @@
-<h1 id="eda">结构化数据探索</h1>
-<p>NHL 数据非常丰富。在进行建模之前，我们需要对基础指标如 GPG (Goals Per Game) 和 PPG (Points Per Game) 进行相关性分析。</p>
+<h1 id="eda">Structured Data Exploration</h1>
+<p>NHL data is very rich. Before modeling, we need to conduct correlation analysis on basic metrics like GPG (Goals Per Game) and PPG (Points Per Game).</p>
 
-<h1 id="modeling">模型选取与训练</h1>
-<p>对于时序性的体育数据，简单的线性回归往往不够。我们引入了随机森林回归，并结合球员的冰上时间（TOI）作为核心特征。</p>
+<h1 id="modeling">Model Selection and Training</h1>
+<p>For time-series sports data, simple linear regression is often not enough. We introduced Random Forest regression, combined with Time On Ice (TOI) as a core feature.</p>
 
-<h1 id="conclusion">实战结论</h1>
-<p>数据表明，进攻区的争球成功率与球员次节的爆发力有极强的正相关性，这为实时战术调整提供了参考。</p>
+<h1 id="conclusion">Practical Conclusions</h1>
+<p>Data shows that faceoff success rate in the offensive zone has a strong positive correlation with a player's explosiveness in the second period, providing a reference for real-time tactical adjustments.</p>

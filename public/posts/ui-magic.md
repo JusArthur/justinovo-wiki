@@ -1,8 +1,8 @@
-<h1 id="misdirection">错误引导与视觉重心</h1>
-<p>在近景魔术中，魔术师会控制观众的注意力。在 UI 设计中，加载动画（Skeleton Screen）实际上就是一种“错误引导”，让用户感知到的等待时间缩短。</p>
+<h1 id="misdirection">Misdirection and Visual Focus</h1>
+<p>In close-up magic, the magician controls the audience's attention. In UI design, a loading animation (Skeleton Screen) is actually a form of 'misdirection' that reduces the user's perceived waiting time.</p>
 
-<h1 id="continuity">交互的连贯性</h1>
-<p>魔术的幻觉来源于动作的无缝衔接。通过 Framer Motion 实现的平滑路由切换，能够消除网页跳转的破碎感，让用户产生应用是一体化运行的错觉。</p>
+<h1 id="continuity">Interaction Continuity</h1>
+<p>The illusion of magic comes from seamless actions. Smooth route transitions implemented via Framer Motion can eliminate the fragmented feel of page navigation, giving users the illusion that the application is running as a single cohesive unit.</p>
 
-<h2 id="surprise">创造惊艳瞬间</h2>
-<p>最好的魔术都有一个“The Reveal”。在应用中，一些细微的微交互（Micro-interactions），比如按钮点击后的粒子效果，能给用户带来超预期的正向反馈。</p>
+<h2 id="surprise">Creating Stunning Moments</h2>
+<p>The best magic tricks always have "The Reveal". In an application, subtle micro-interactions, such as particle effects after clicking a button, can provide users with positive feedback that exceeds expectations.</p>
