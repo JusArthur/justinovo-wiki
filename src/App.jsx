@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-
+import BlogPost from "./pages/BlogPost";
 import BooksPage from "./pages/Books";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
@@ -11,7 +11,7 @@ import CollagePage from "./pages/Collage";
 import AboutPage from "./pages/About";
 import RecommendationsPage from "./pages/Recommendations";
 import ProjectsPage from "./pages/Projects";
-
+import BlogArchive from "./pages/BlogArchive";
 function App() {
   const location = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -216,6 +216,35 @@ function App() {
                 className="w-full min-h-screen relative z-10"
               >
                 <ProjectsPage lang="EN" />
+              </motion.div>
+            }
+          />
+
+          <Route
+            path="/blog"
+            element={
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="w-full min-h-screen relative z-10"
+              >
+                <BlogArchive lang="EN" />
+              </motion.div>
+            }
+          />
+
+          {/* 2. The Individual Post Page (The :slug part) */}
+          <Route
+            path="/blog/:slug"
+            element={
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="w-full min-h-screen relative z-10"
+              >
+                <BlogPost />
               </motion.div>
             }
           />

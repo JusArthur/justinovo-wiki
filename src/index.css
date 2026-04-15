@@ -49,8 +49,13 @@
   }
 
   .dark body {
-    background: radial-gradient(circle at top left, #111111 0%, #080808 40%, #000000 100%);
-    color: #39ff14; 
+    background: radial-gradient(
+      circle at top left,
+      #111111 0%,
+      #080808 40%,
+      #000000 100%
+    );
+    color: #39ff14;
   }
 
   .dark body::after {
@@ -67,7 +72,25 @@
   .dark .glass-card {
     @apply bg-black/50 border border-[#39ff14]/30 shadow-[0_8px_30px_rgba(57,255,20,0.1)] text-[#e5e7eb];
   }
+  .bg-article {
+    @apply bg-white/70 dark:bg-[#171717]/80 backdrop-blur-md;
+  }
 
+  .text-brand {
+    @apply text-[#1E80FF] dark:text-[#39ff14];
+  }
+
+  .bg-brand {
+    @apply bg-[#1E80FF] dark:bg-[#39ff14];
+  }
+
+  .text-secondary {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  .code-block-wrapper {
+    @apply relative my-4 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800;
+  }
   /* Strategic Hover Pop for Interactive Widgets */
   .hover-pop {
     @apply hover:scale-105 hover:z-50 hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)] cursor-pointer;
@@ -98,7 +121,7 @@
   .social-chip.dark {
     @apply bg-[#1a1a1a] text-white border-transparent;
   }
-  
+
   .dark .social-chip.dark {
     @apply bg-[#39ff14] text-black font-bold shadow-[0_0_15px_rgba(57,255,20,0.4)];
   }
@@ -107,11 +130,11 @@
   .cal-day {
     @apply h-8 w-8 flex items-center justify-center text-sm text-[#7b888e] rounded-full transition-colors;
   }
-  
+
   .dark .cal-day {
     @apply text-gray-400;
   }
-  
+
   .cal-day.active {
     @apply bg-[#35bfab] text-white shadow-[0_4px_12px_rgba(53,191,171,0.4)];
   }
