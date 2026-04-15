@@ -161,12 +161,15 @@
   /* Headings */
   .prose h1 {
     @apply text-2xl font-semibold mt-10 mb-6 text-gray-900 dark:text-white;
+    scroll-margin-top: 120px; /* 新增：防止被固定导航栏遮挡 */
   }
   .prose h2 {
     @apply text-xl font-semibold mt-8 mb-4 text-gray-900 dark:text-white;
+    scroll-margin-top: 120px; /* 新增：防止被固定导航栏遮挡 */
   }
   .prose h3 {
     @apply text-lg font-semibold mt-6 mb-4 text-gray-900 dark:text-white;
+    scroll-margin-top: 120px; /* 新增：防止被固定导航栏遮挡 */
   }
 
   /* Lists (Fixes the missing dots) */
