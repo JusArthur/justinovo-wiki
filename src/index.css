@@ -150,4 +150,74 @@
   .font-greeting-cn {
     font-family: "Noto Serif SC", "Songti SC", "STSong", serif;
   }
+
+  /* =========================================
+     MARKDOWN (.prose) STYLES FIX
+     ========================================= */
+  .prose {
+    @apply text-gray-700 dark:text-gray-300 leading-relaxed text-[15px];
+  }
+
+  /* Headings */
+  .prose h1 {
+    @apply text-2xl font-semibold mt-10 mb-6 text-gray-900 dark:text-white;
+  }
+  .prose h2 {
+    @apply text-xl font-semibold mt-8 mb-4 text-gray-900 dark:text-white;
+  }
+  .prose h3 {
+    @apply text-lg font-semibold mt-6 mb-4 text-gray-900 dark:text-white;
+  }
+
+  /* Lists (Fixes the missing dots) */
+  .prose ul {
+    @apply list-disc pl-6 my-5 space-y-2 marker:text-gray-400 dark:marker:text-gray-500;
+  }
+  .prose ol {
+    @apply list-decimal pl-6 my-5 space-y-2 marker:text-gray-400 dark:marker:text-gray-500;
+  }
+
+  /* Bold Text */
+  .prose strong {
+    @apply font-bold text-gray-900 dark:text-white;
+  }
+
+  /* Links - FIXED */
+  .prose a {
+    @apply text-[#1E80FF] dark:text-[#39ff14] hover:underline break-words transition-colors;
+  }
+
+  /* Tables (Fixes the "disaster" look) */
+  .prose table {
+    @apply w-full border-collapse my-8 text-sm text-left overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800;
+  }
+  .prose thead {
+    @apply bg-gray-50 dark:bg-black/30 text-gray-800 dark:text-gray-200;
+  }
+  .prose th {
+    @apply px-4 py-3 font-semibold border-b border-gray-200 dark:border-gray-800;
+  }
+  .prose td {
+    @apply px-4 py-3 border-b border-gray-100 dark:border-gray-800/50 text-gray-600 dark:text-gray-400;
+  }
+  .prose tr:last-child td {
+    @apply border-b-0;
+  }
+
+  /* Blockquotes - FIXED */
+  .prose blockquote {
+    @apply border-l-4 border-[#1E80FF] dark:border-[#39ff14] pl-4 py-1 italic text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-white/5 rounded-r-lg my-6;
+  }
+
+  /* Inline Code & Pre blocks - FIXED */
+  .prose p code,
+  .prose li code {
+    @apply bg-gray-100 dark:bg-white/10 text-[#1E80FF] dark:text-[#39ff14] px-1.5 py-0.5 rounded-md font-mono text-[13px];
+  }
+  .prose pre {
+    @apply bg-[#fafafa] dark:bg-black/30 p-4 rounded-xl overflow-x-auto border border-gray-200 dark:border-gray-800 my-6 font-mono text-sm text-gray-800 dark:text-gray-300;
+  }
+  .prose hr {
+    @apply my-8 border-gray-200 dark:border-gray-800;
+  }
 }

@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { blogPosts } from "../data/blogData";
 import { Heart } from "lucide-react";
+// 引入 Markdown 相关库
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -11,7 +15,7 @@ export default function BlogPost() {
 
   useEffect(() => {
     if (post) {
-      // Plan B: Asynchronously fetch the content
+      // 异步获取 Markdown 纯文本内容
       fetch(`/posts/${slug}.md`)
         .then((res) => res.text())
         .then((text) => setContent(text))
@@ -30,23 +34,28 @@ export default function BlogPost() {
         </div>
         <div className="text-secondary mt-3 text-center text-sm">{post.date}</div>
         
-        <div 
-          className="prose dark:prose-invert mt-6 max-w-none dark:text-gray-300"
-          dangerouslySetInnerHTML={{ __html: content }} 
-        />
+        {/* 使用 ReactMarkdown 渲染内容，搭配 Tailwind 的 prose 样式 */}
+        <div className="prose dark:prose-invert mt-6 max-w-none dark:text-gray-300">
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm]} 
+            rehypePlugins={[rehypeSlug]}
+          >
+            {content}
+          </ReactMarkdown>
+        </div>
       </article>
 
-      {/* Sidebar logic */}
+      {/* 右侧边栏 (TOC & Likes) 保持不变 */}
       <div className="sticky top-24 flex w-[200px] shrink-0 flex-col gap-4 self-start max-sm:hidden">
         <div className="glass-card w-full rounded-xl border p-3 border-white/20 dark:border-gray-800 shadow-sm">
-          <img alt="cover" className="rounded-xl border border-white/10 object-cover" src={post.cover} />
+          <img alt="cover" className="rounded-xl border border-white/10 object-cover w-full h-auto" src={post.cover} />
         </div>
         <div className="glass-card w-full rounded-xl border p-3 text-sm border-white/20 dark:border-gray-800 shadow-sm">
-          <h2 className="text-secondary mb-2 font-medium">摘要</h2>
+          <h2 className="text-secondary mb-2 font-medium">Summary</h2>
           <p className="text-secondary leading-relaxed">{post.summary}</p>
         </div>
         <div className="glass-card w-full rounded-xl border p-3 text-sm border-white/20 dark:border-gray-800 shadow-sm">
-          <h2 className="text-secondary mb-2 font-medium">目录</h2>
+          <h2 className="text-secondary mb-2 font-medium">Table of Contents</h2>
           <div className="space-y-2">
             {post.toc.map((item) => (
               <a key={item.id} href={`#${item.id}`} className={`hover:text-brand block transition-colors ${item.level === 1 ? 'font-medium' : 'pl-3 text-gray-500'}`}>
