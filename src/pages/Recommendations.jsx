@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
 import { recommendationsData } from "../data/recommedationsData";
 
-// You can move this to a dedicated src/data/recommendationsData.js later
-
-
-const categories = ["全部", "My Column", "OS", "LLM", "Tools/Methods", "DB", "IoT/Embedded", "Backend", "Frontend", "Domain", "Programming Language", "Learning", "Track"];
+const categories = ["All", "My Column", "OS", "LLM", "Tools/Methods", "DB", "IoT/Embedded", "Backend", "Frontend", "Domain", "Programming Language", "Learning", "Track"];
 
 export default function RecommendationsPage({ lang = "EN" }) {
     const [searchTerm, setSearchTerm] = useState("");
