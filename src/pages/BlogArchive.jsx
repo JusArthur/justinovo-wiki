@@ -21,7 +21,7 @@ export default function BlogArchive() {
           <div className="mb-3 flex items-center justify-between gap-3 text-base">
             <div className="flex items-center gap-3">
               <div className="font-medium text-gray-800 dark:text-white font-mono">{year}</div>
-              <div className="h-2 w-2 rounded-full bg-[#D9D9D9]"></div>
+              <div className="h-2 w-2 rounded-full bg-[#D9D9D9] dark:bg-gray-600"></div>
               <div className="text-secondary text-sm">
                 {groupedPosts[year].length} posts
               </div>
@@ -45,8 +45,8 @@ export default function BlogArchive() {
 
                   {/* The Animated Timeline Dot & Vertical Line */}
                   <div className="relative flex h-2 w-2 items-center justify-center">
-                    {/* The Dot: Expands from 5px to 16px (h-4) on hover */}
-                    <div className="bg-gray-400 dark:bg-gray-600 group-hover:bg-brand h-[5px] w-[5px] rounded-full transition-all duration-300 group-hover:h-4"></div>
+                    {/* FIXED: Changed group-hover:bg-brand to group-hover:bg-[#35bfab] */}
+                    <div className="bg-gray-400 dark:bg-gray-600 group-hover:bg-[#35bfab] h-[5px] w-[5px] rounded-full transition-all duration-300 group-hover:h-4"></div>
                     
                     {/* The Dashed Connector SVG: Visible above the dot */}
                     <svg 
@@ -66,7 +66,8 @@ export default function BlogArchive() {
                   </div>
 
                   {/* Title: Translates and changes color */}
-                  <div className="flex-1 truncate text-sm font-medium transition-all duration-300 group-hover:text-brand group-hover:translate-x-2 text-gray-700 dark:text-gray-300">
+                  {/* FIXED: Changed group-hover:text-brand to group-hover:text-[#35bfab] */}
+                  <div className="flex-1 truncate text-sm font-medium transition-all duration-300 group-hover:text-[#35bfab] group-hover:translate-x-2 text-gray-700 dark:text-gray-300">
                     {post.title}
                   </div>
 

@@ -26,6 +26,7 @@ export const blogPosts = [
     summary: "How to use historical NHL data to build predictive models and quantify player scoring potential.",
     likes: 84,
     toc: [
+      // FIXED: These IDs now exactly match the ## headings in the markdown file
       { id: "structured-data-exploration", text: "Structured Data Exploration", level: 1 },
       { id: "model-selection-and-training", text: "Model Selection and Training", level: 1 },
       { id: "practical-conclusions", text: "Practical Conclusions", level: 1 },
