@@ -5,7 +5,9 @@ import RealCalendar from "../components/RealCalendar";
 import GreetingBox from "../components/GreetingBox";
 import { useMusic } from "../context/MusicContext";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion"; // <-- Added imports
+import { motion, AnimatePresence } from "framer-motion";
+import { blogPosts } from "../data/blogData";
+import { recommendationsData } from "../data/recommedationsData";
 
 function Home({ isDarkMode, setIsDarkMode }) {
   const {
@@ -23,6 +25,19 @@ function Home({ isDarkMode, setIsDarkMode }) {
   const mobileMainRef = useRef(null);
   const desktopMainRef = useRef(null);
   const revealIntervalRef = useRef(null);
+
+  const [randomPick, setRandomPick] = useState(null);
+
+  useEffect(() => {
+    // Pick a random recommendation on mount
+    const randomIndex = Math.floor(Math.random() * recommendationsData.length);
+    setRandomPick(recommendationsData[randomIndex]);
+  }, []);
+
+  // Sort blog posts by date and take the first one
+  const latestPost = [...blogPosts].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  )[0];
 
   // --- TOAST NOTIFICATION STATE ---
   const [toast, setToast] = useState({ visible: false, message: "" });
@@ -62,7 +77,9 @@ function Home({ isDarkMode, setIsDarkMode }) {
   useEffect(() => {
     const desktopMain = desktopMainRef.current;
     const mobileMain = mobileMainRef.current;
-    let lastDesktopRect = desktopMain ? desktopMain.getBoundingClientRect() : null;
+    let lastDesktopRect = desktopMain
+      ? desktopMain.getBoundingClientRect()
+      : null;
     let lastMobileRect = mobileMain ? mobileMain.getBoundingClientRect() : null;
 
     const resizeObserver = new ResizeObserver(() => {
@@ -78,7 +95,8 @@ function Home({ isDarkMode, setIsDarkMode }) {
         if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
           el.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
           void el.offsetWidth;
-          el.style.transition = "transform 575ms cubic-bezier(0.22, 1, 0.36, 1)";
+          el.style.transition =
+            "transform 575ms cubic-bezier(0.22, 1, 0.36, 1)";
           el.style.transform = "translate(0px, 0px)";
         } else {
           el.style.transition = prevTransition;
@@ -86,8 +104,16 @@ function Home({ isDarkMode, setIsDarkMode }) {
         updateRect(currentRect);
       };
 
-      applySmoothReCenter(desktopMain, lastDesktopRect, (r) => (lastDesktopRect = r));
-      applySmoothReCenter(mobileMain, lastMobileRect, (r) => (lastMobileRect = r));
+      applySmoothReCenter(
+        desktopMain,
+        lastDesktopRect,
+        (r) => (lastDesktopRect = r)
+      );
+      applySmoothReCenter(
+        mobileMain,
+        lastMobileRect,
+        (r) => (lastMobileRect = r)
+      );
     });
 
     resizeObserver.observe(document.body);
@@ -110,7 +136,7 @@ function Home({ isDarkMode, setIsDarkMode }) {
   };
 
   // --- REUSABLE BLOCKS TO PREVENT DUPLICATION ---
-  
+
   const renderPhotoCollage = (stepClass) => (
     <Link
       to="/collage"
@@ -125,7 +151,9 @@ function Home({ isDarkMode, setIsDarkMode }) {
   );
 
   const renderSocialLinks = (stepClass) => (
-    <div className={`flex justify-center gap-3 w-full max-w-[420px] relative z-40 ${stepClass}`}>
+    <div
+      className={`flex justify-center gap-3 w-full max-w-[420px] relative z-40 ${stepClass}`}
+    >
       <a
         className="social-chip dark cursor-pointer"
         href="https://github.com/JusArthur"
@@ -143,7 +171,11 @@ function Home({ isDarkMode, setIsDarkMode }) {
         target="_blank"
         rel="noreferrer"
       >
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-gray-900 dark:text-white">
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-3.5 h-3.5 text-gray-900 dark:text-white"
+        >
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.918H5.053z"></path>
         </svg>
         X
@@ -154,7 +186,11 @@ function Home({ isDarkMode, setIsDarkMode }) {
         target="_blank"
         rel="noreferrer"
       >
-        <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4 text-black dark:text-[#39ff14]">
+        <svg
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          className="w-4 h-4 text-black dark:text-[#39ff14]"
+        >
           <path d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.201 1.743l-.002-.001.002.001a2.895 2.895 0 0 1 3.183-4.51v-3.5a6.329 6.329 0 0 0-5.394 10.692 6.33 6.33 0 0 0 10.857-4.424V8.687a8.182 8.182 0 0 0 4.773 1.526V6.79a4.831 4.831 0 0 1-1.003-.104z" />
         </svg>
         {lang === "EN" ? "TikTok" : "抖音"}
@@ -164,7 +200,11 @@ function Home({ isDarkMode, setIsDarkMode }) {
         onClick={(e) => {
           e.preventDefault();
           navigator.clipboard.writeText("justinxmay@gmail.com");
-          showToast(lang === "EN" ? "Email copied to clipboard!" : "邮箱已复制到剪贴板！");
+          showToast(
+            lang === "EN"
+              ? "Email copied to clipboard!"
+              : "邮箱已复制到剪贴板！"
+          );
         }}
         title="Copy Email"
       >
@@ -179,7 +219,10 @@ function Home({ isDarkMode, setIsDarkMode }) {
   return (
     <>
       {/* ---------------- MOBILE VIEW ---------------- */}
-      <main ref={mobileMainRef} className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5">
+      <main
+        ref={mobileMainRef}
+        className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5"
+      >
         {renderPhotoCollage(getRevealClass(2, "up"))}
         <GreetingBox lang={lang} />
         {renderSocialLinks(getRevealClass(7, "up"))}
@@ -196,84 +239,140 @@ function Home({ isDarkMode, setIsDarkMode }) {
       </main>
 
       {/* ---------------- DESKTOP VIEW ---------------- */}
-      <main ref={desktopMainRef} className="hidden md:flex max-w-[1100px] mx-auto min-h-screen p-8 flex-nowrap justify-center items-center gap-6 relative overflow-x-hidden">
-        
+      <main
+        ref={desktopMainRef}
+        className="hidden md:flex max-w-[1100px] mx-auto min-h-screen p-8 flex-nowrap justify-center items-center gap-6 relative overflow-x-hidden"
+      >
         {/* LEFT COLUMN */}
         <div className="w-[260px] min-w-[260px] flex flex-col gap-6 z-10">
           <div className={getRevealClass(1, "left")}>
             <Sidebar lang={lang} />
           </div>
 
-          <article className={`glass-card hover-pop p-5 w-[270px] transform -rotate-1 -ml-[8px] ${getRevealClass(8, "left")}`}>
+          <article
+            className={`glass-card hover-pop p-5 w-[270px] transform -rotate-1 -ml-[8px] ${getRevealClass(
+              8,
+              "left"
+            )}`}
+          >
             <h4 className="mb-3 text-xs font-semibold text-gray-400 dark:text-[#39ff14]/80 tracking-wider">
-              {lang === "EN" ? "Latest Posts" : "最新文章"}
+              {lang === "EN" ? "Latest Post" : "最新文章"}
             </h4>
-            <div className="flex gap-3 items-center">
-              <div className="h-12 w-12 rounded-xl bg-gray-200 dark:bg-gray-800 overflow-hidden shrink-0">
-                <img
-                  className="w-full h-full object-cover opacity-90 dark:opacity-70"
-                  src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=100&q=80"
-                  alt=""
-                />
-              </div>
-              <div>
-                <h5 className="text-sm font-semibold text-gray-800 dark:text-white leading-tight">
-                  Harness 用于...
-                </h5>
-                <p className="text-[11px] text-[#7b888e] dark:text-gray-400 mt-1">
-                  {lang === "EN" ? "How to design automated evaluation" : "如何设计自动化的评估函数"}
-                </p>
-                <time className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 block">
-                  2026/4/1
-                </time>
-              </div>
-            </div>
+            {latestPost && (
+              <Link
+                to={`/blog/${latestPost.slug}`}
+                className="flex gap-3 items-center"
+              >
+                <div className="h-12 w-12 rounded-xl bg-gray-200 dark:bg-gray-800 overflow-hidden shrink-0">
+                  <img
+                    className="w-full h-full object-cover opacity-90 dark:opacity-70"
+                    src={latestPost.cover}
+                    alt={latestPost.title}
+                  />
+                </div>
+                <div className="overflow-hidden">
+                  <h5 className="text-sm font-semibold text-gray-800 dark:text-white leading-tight truncate w-[180px]">
+                    {latestPost.title}
+                  </h5>
+                  <p className="text-[11px] text-[#7b888e] dark:text-gray-400 mt-1 truncate w-[180px]">
+                    {latestPost.summary}
+                  </p>
+                  <time className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 block">
+                    {latestPost.date}
+                  </time>
+                </div>
+              </Link>
+            )}
           </article>
         </div>
 
         {/* CENTER COLUMN */}
         <div className="w-[400px] min-w-[400px] flex flex-col items-center relative z-20 mt-10">
           <div className="mb-10 w-full flex justify-center">
-             {renderPhotoCollage(getRevealClass(2, "up"))}
+            {renderPhotoCollage(getRevealClass(2, "up"))}
           </div>
-         
+
           <GreetingBox lang={lang} />
-          
+
           <div className="mt-6 w-full flex justify-center">
-             {renderSocialLinks(getRevealClass(7, "up"))}
+            {renderSocialLinks(getRevealClass(7, "up"))}
           </div>
 
           <div className="mt-8 flex justify-between items-start w-[600px] ml-50 relative z-30">
-            <article className={`glass-card hover-pop p-5 w-[240px] shadow-sm ${getRevealClass(6, "left")}`}>
+            <article
+              className={`glass-card hover-pop p-5 w-[240px] shadow-sm ${getRevealClass(
+                6,
+                "left"
+              )}`}
+            >
               <h4 className="mb-3 text-xs font-semibold text-gray-400 dark:text-[#39ff14]/80 tracking-wider">
-                {lang === "EN" ? "Random Picks" : "随机推荐"}
+                {lang === "EN" ? "Random Pick" : "随机推荐"}
               </h4>
-              <div className="flex gap-3 items-center">
-                <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-[#39ff14]/20 flex items-center justify-center shrink-0 text-[#3b82f6] dark:text-[#39ff14]">
-                  <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-                  </svg>
-                </div>
-                <div>
-                  <h5 className="text-sm font-semibold text-gray-800 dark:text-white">
-                    LLM | SLM | vLLM
-                  </h5>
-                  <p className="text-[11px] text-[#7b888e] dark:text-gray-400 mt-1">
-                    Views: 59,257 Marks: 1,061
-                  </p>
-                </div>
-              </div>
+              {randomPick && (
+                <a
+                  href={randomPick.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex gap-3 items-center"
+                >
+                  <div className="h-10 w-10 rounded-lg bg-blue-100 dark:bg-[#39ff14]/20 overflow-hidden flex items-center justify-center shrink-0 text-[#3b82f6] dark:text-[#39ff14]">
+                    {randomPick.image ? (
+                      <img
+                        src={randomPick.image}
+                        alt={randomPick.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <svg
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="overflow-hidden">
+                    <h5 className="text-sm font-semibold text-gray-800 dark:text-white truncate w-[150px]">
+                      {randomPick.title}
+                    </h5>
+                    <p className="text-[11px] text-[#7b888e] dark:text-gray-400 mt-1 truncate w-[150px]">
+                      {/* Clean up any newlines so it looks nice in the card */}
+                      {randomPick.desc.replace(/\n/g, " ")}
+                    </p>
+                  </div>
+                </a>
+              )}
             </article>
 
             {/* GLOBAL MUSIC PLAYER */}
-            <div className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(5, "up")}`}>
+            <div
+              className={`relative flex flex-col items-start mt-2 pl-10 pb-18 ${getRevealClass(
+                5,
+                "up"
+              )}`}
+            >
               <article
                 className="glass-card hover-pop p-2 pr-2 w-[310px] rounded-full flex items-center gap-3 cursor-pointer"
                 onClick={handleToggleAudio}
               >
                 <div className="w-10 h-10 rounded-full bg-white/50 dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shrink-0">
-                  <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
-                    <path fillRule="evenodd" d="M19.322 3.322c.314-.028.678.21.678.53v12.248a4.5 4.5 0 11-1.5-3.385V8.19l-9 2.01v7.899a4.5 4.5 0 11-1.5-3.384V5.215c0-.395.347-.723.738-.723h.054c.264 0 .524.088.736.248l9.043-2.01a1.5 1.5 0 01.249-.008z" clipRule="evenodd" />
+                  <svg
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M19.322 3.322c.314-.028.678.21.678.53v12.248a4.5 4.5 0 11-1.5-3.385V8.19l-9 2.01v7.899a4.5 4.5 0 11-1.5-3.384V5.215c0-.395.347-.723.738-.723h.054c.264 0 .524.088.736.248l9.043-2.01a1.5 1.5 0 01.249-.008z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
 
@@ -288,25 +387,63 @@ function Home({ isDarkMode, setIsDarkMode }) {
 
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); togglePlaybackMode(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePlaybackMode();
+                  }}
                   className="w-7 h-7 rounded-full bg-transparent hover:bg-white/40 dark:hover:bg-[#39ff14]/20 flex items-center justify-center text-gray-500 dark:text-[#39ff14]/80 transition-colors shrink-0"
-                  title={playbackMode === "order" ? "Play in Order" : "Loop Single"}
+                  title={
+                    playbackMode === "order" ? "Play in Order" : "Loop Single"
+                  }
                 >
                   {playbackMode === "order" ? (
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    <svg
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
                     </svg>
                   ) : (
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-4 h-4 relative">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      <text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="bold" fill="currentColor" strokeWidth="0">1</text>
+                    <svg
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="w-4 h-4 relative"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                      <text
+                        x="12"
+                        y="16"
+                        textAnchor="middle"
+                        fontSize="8"
+                        fontWeight="bold"
+                        fill="currentColor"
+                        strokeWidth="0"
+                      >
+                        1
+                      </text>
                     </svg>
                   )}
                 </button>
 
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); handlePrevSong(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrevSong();
+                  }}
                   className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0"
                 >
                   &laquo;
@@ -314,23 +451,45 @@ function Home({ isDarkMode, setIsDarkMode }) {
 
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); handleToggleAudio(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleAudio();
+                  }}
                   className="w-9 h-9 rounded-full bg-white dark:bg-[#39ff14]/20 flex items-center justify-center text-[#35bfab] dark:text-[#39ff14] shadow-sm ml-0.5 shrink-0"
                 >
                   {isPlaying ? (
-                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4">
-                      <path fillRule="evenodd" d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z" clipRule="evenodd" />
+                    <svg
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   ) : (
-                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4">
-                      <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
+                    <svg
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   )}
                 </button>
 
                 <button
                   type="button"
-                  onClick={(e) => { e.stopPropagation(); handleNextSong(); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNextSong();
+                  }}
                   className="w-7 h-7 rounded-full bg-white/70 dark:bg-black/40 border border-white/80 dark:border-[#39ff14]/40 flex items-center justify-center text-[10px] text-gray-600 dark:text-[#39ff14] shrink-0 ml-0.5"
                 >
                   &raquo;
@@ -339,7 +498,11 @@ function Home({ isDarkMode, setIsDarkMode }) {
 
               {/* Desktop Stats/Like Button */}
               <button className="mt-4 ml-6 w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative text-pink-400 dark:text-[#39ff14]">
-                <svg fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
+                <svg
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  className="w-6 h-6"
+                >
                   <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
                 </svg>
                 <span className="absolute -top-2 -right-4 bg-white/80 dark:bg-black/80 backdrop-blur-md text-gray-500 dark:text-[#39ff14] text-[10px] px-1.5 py-0.5 rounded-full border border-white dark:border-[#39ff14]/40">
@@ -352,10 +515,25 @@ function Home({ isDarkMode, setIsDarkMode }) {
 
         {/* RIGHT COLUMN */}
         <div className="w-full lg:w-[350px] lg:min-w-[350px] flex flex-col gap-4 z-10 mb-8 lg:mb-20">
-          <div className={`flex justify-start gap-3 mb-2 ${getRevealClass(8, "right")}`}>
+          <div
+            className={`flex justify-start gap-3 mb-2 ${getRevealClass(
+              8,
+              "right"
+            )}`}
+          >
             <button className="flex items-center gap-2 px-5 py-2 rounded-full bg-[#35bfab] dark:bg-[#39ff14] text-white dark:text-black text-sm font-medium shadow-[0_4px_14px_rgba(53,191,171,0.3)] dark:shadow-[0_4px_14px_rgba(57,255,20,0.4)] transition-all duration-300 hover:scale-110 hover:z-50 hover:bg-[#2da896] dark:hover:bg-[#32e612] cursor-pointer">
-              <svg fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+              <svg
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+                />
               </svg>
               {lang === "EN" ? "Write Post" : "写文章"}
             </button>
@@ -366,12 +544,32 @@ function Home({ isDarkMode, setIsDarkMode }) {
               title="Toggle Theme"
             >
               {isDarkMode ? (
-                <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                <svg
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+                  />
                 </svg>
               ) : (
-                <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                <svg
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+                  />
                 </svg>
               )}
             </button>
@@ -381,9 +579,27 @@ function Home({ isDarkMode, setIsDarkMode }) {
               className="flex items-center justify-center px-4 h-10 rounded-full bg-white/60 dark:bg-black/60 border border-white/80 dark:border-[#39ff14]/40 shadow-sm text-sm transition-all duration-300 hover:scale-110 hover:z-50 cursor-pointer select-none"
               title="Toggle Language"
             >
-              <span className={`transition-colors duration-300 ${lang === "EN" ? "text-gray-900 dark:text-[#39ff14] font-bold" : "text-gray-400 dark:text-gray-600 font-medium"}`}>EN</span>
-              <span className="mx-1.5 text-gray-300 dark:text-gray-600/50">/</span>
-              <span className={`transition-colors duration-300 ${lang === "CN" ? "text-gray-900 dark:text-[#39ff14] font-bold" : "text-gray-400 dark:text-gray-600 font-medium"}`}>CN</span>
+              <span
+                className={`transition-colors duration-300 ${
+                  lang === "EN"
+                    ? "text-gray-900 dark:text-[#39ff14] font-bold"
+                    : "text-gray-400 dark:text-gray-600 font-medium"
+                }`}
+              >
+                EN
+              </span>
+              <span className="mx-1.5 text-gray-300 dark:text-gray-600/50">
+                /
+              </span>
+              <span
+                className={`transition-colors duration-300 ${
+                  lang === "CN"
+                    ? "text-gray-900 dark:text-[#39ff14] font-bold"
+                    : "text-gray-400 dark:text-gray-600 font-medium"
+                }`}
+              >
+                CN
+              </span>
             </button>
           </div>
 
@@ -406,7 +622,17 @@ function Home({ isDarkMode, setIsDarkMode }) {
             className="fixed bottom-6 right-6 z-[9999] flex items-center gap-3 bg-white dark:bg-[#111111] border border-gray-200 dark:border-gray-800 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(57,255,20,0.1)] rounded-xl px-4 py-3 min-w-[200px]"
           >
             <div className="flex-shrink-0 text-[#22c55e] dark:text-[#39ff14]">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="m9 12 2 2 4-4"></path>
               </svg>
