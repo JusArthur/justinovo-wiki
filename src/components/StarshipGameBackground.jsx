@@ -77,28 +77,95 @@ const StarshipGameBackground = () => {
       }
     }
 
-    class Enemy {
-      constructor() {
-        this.radius = Math.random() * 12 + 8;
-        this.x = Math.random() * (width - this.radius * 2) + this.radius;
-        this.y = -this.radius;
-        this.speed = Math.random() * 2 + 1;
-        this.color = `hsl(${Math.random() * 50 + 340}, 80%, 60%)`;
-      }
-      update() { this.y += this.speed; }
-      draw() {
-        ctx.fillStyle = this.color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = this.color;
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y + this.radius);
-        ctx.lineTo(this.x - this.radius, this.y - this.radius);
-        ctx.lineTo(this.x + this.radius, this.y - this.radius);
-        ctx.closePath();
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-    }
+class Enemy {
+  constructor() {
+    this.radius = Math.random() * 11 + 9;           // 9–20
+    this.x = Math.random() * (width - this.radius * 2) + this.radius;
+    this.y = -this.radius * 2;
+    this.speed = Math.random() * 2.2 + 1.1;
+    
+    // Dangerous red/magenta color family
+    this.hue = Math.random() * 40 + 340;            // 340–380
+    this.color = `hsl(${this.hue}, 85%, 62%)`;
+    this.coreColor = `hsl(${this.hue}, 100%, 75%)`;
+
+    // For pulsing animation
+    this.phase = Math.random() * Math.PI * 2;
+  }
+
+  update() {
+    this.y += this.speed;
+    this.phase += 0.08; // Controls pulse speed
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+
+    const pulse = Math.sin(this.phase) * 0.15 + 1; // 0.85 → 1.15
+
+    // ========== OUTER GLOW ==========
+    ctx.shadowBlur = 16;
+    ctx.shadowColor = this.color;
+    ctx.fillStyle = this.color;
+
+    // Main body (sleek pointed shape)
+    ctx.beginPath();
+    ctx.moveTo(0, this.radius * 1.1);                    // Bottom point
+    ctx.lineTo(-this.radius * 0.65, -this.radius * 0.5);
+    ctx.lineTo(0, -this.radius * 1.0);                   // Top point
+    ctx.lineTo(this.radius * 0.65, -this.radius * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Small rear wings / stabilizers
+    ctx.fillStyle = `hsl(${this.hue}, 70%, 45%)`;
+    ctx.beginPath();
+    ctx.moveTo(-this.radius * 0.9, this.radius * 0.3);
+    ctx.lineTo(-this.radius * 0.35, -this.radius * 0.15);
+    ctx.lineTo(-this.radius * 0.15, this.radius * 0.5);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(this.radius * 0.9, this.radius * 0.3);
+    ctx.lineTo(this.radius * 0.35, -this.radius * 0.15);
+    ctx.lineTo(this.radius * 0.15, this.radius * 0.5);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+    // ========== INNER GLOWING CORE ==========
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = this.coreColor;
+    ctx.fillStyle = this.coreColor;
+
+    ctx.beginPath();
+    ctx.ellipse(
+      0, 
+      -this.radius * 0.15, 
+      this.radius * 0.28 * pulse, 
+      this.radius * 0.38 * pulse, 
+      0, 0, Math.PI * 2
+    );
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+    // Subtle highlight on core
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.beginPath();
+    ctx.ellipse(
+      -this.radius * 0.08, 
+      -this.radius * 0.25, 
+      this.radius * 0.12, 
+      this.radius * 0.18, 
+      0, 0, Math.PI * 2
+    );
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
 
     class Particle {
       constructor(x, y, color) {
