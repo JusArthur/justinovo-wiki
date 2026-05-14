@@ -22,7 +22,7 @@ export const blogPosts = [
     title: "Data-Driven: Predicting NHL Player Performance using Python",
     date: "2026-04-05",
     tags: ["#DataScience", "#Python"],
-    cover: "/assets/collage/roy.jpg", 
+    cover: "/assets/collage/chiikawa.jpg", 
     summary: "How to use historical NHL data to build predictive models and quantify player scoring potential.",
     likes: 84,
     toc: [
