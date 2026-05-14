@@ -138,10 +138,10 @@ const NavBar = ({ lang = "EN" }) => {
 
   return (
     <div
-      className={`fixed top-6 left-6 z-50 glass-card px-4 py-2 flex flex-nowrap items-center gap-4 w-max shadow-md border-white/60 dark:border-[#39ff14]/30 
-        transition-all duration-[650ms] ease-[cubic-bezier(0.25,0.1,0.25,1)]
-        ${mounted 
-          ? "opacity-100 scale-100 translate-y-0" 
+      className={`fixed top-6 left-0 right-0 mx-auto md:left-6 md:right-auto md:mx-0 z-50 glass-card px-4 py-2 flex flex-nowrap items-center gap-4 w-max shadow-md border-white/60 dark:border-[#39ff14]/30 
+    transition-all duration-[650ms] ease-[cubic-bezier(0.25,0.1,0.25,1)]
+    ${mounted
+          ? "opacity-100 scale-100 translate-y-0"
           : "opacity-0 scale-[0.88] -translate-y-3"
         }`}
     >
@@ -168,9 +168,8 @@ const NavBar = ({ lang = "EN" }) => {
         onMouseLeave={() => setHoveredIndex(null)}
       >
         <div
-          className={`absolute left-0 h-11 w-11 rounded-full bg-white/60 dark:bg-[#39ff14]/20 border border-transparent dark:border-[#39ff14]/40 shadow-sm pointer-events-none transition-all duration-300 ease-out ${
-            hoveredIndex !== null ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute left-0 h-11 w-11 rounded-full bg-white/60 dark:bg-[#39ff14]/20 border border-transparent dark:border-[#39ff14]/40 shadow-sm pointer-events-none transition-all duration-300 ease-out ${hoveredIndex !== null ? "opacity-100" : "opacity-0"
+            }`}
           style={{
             transform: `translateX(calc(${hoveredIndex !== null ? hoveredIndex : 0} * 3.25rem))`,
           }}
@@ -185,11 +184,10 @@ const NavBar = ({ lang = "EN" }) => {
             onMouseEnter={() => setHoveredIndex(i)}
           >
             <div
-              className={`transition-colors duration-300 ${
-                hoveredIndex === i
+              className={`transition-colors duration-300 ${hoveredIndex === i
                   ? "text-[#35bfab] dark:text-[#39ff14]"
                   : "text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-              }`}
+                }`}
             >
               {item.icon}
             </div>
