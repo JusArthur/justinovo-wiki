@@ -223,11 +223,13 @@ function Home({ isDarkMode, setIsDarkMode }) {
         ref={mobileMainRef}
         className="md:hidden min-h-screen flex flex-col"
       >
-        {/* Navbar */}
-        <NavBar />
+        {/* Sticky Navbar - Always visible while scrolling */}
+        <div className="sticky top-0 z-50 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md">
+          <NavBar />
+        </div>
 
-        {/* Main Content - Adjusted padding so nothing overlaps */}
-        <div className="p-4 pt-20 flex flex-col items-center gap-5">
+        {/* Main Content - Enough padding so nothing overlaps */}
+        <div className="p-4 pt-24 flex flex-col items-center gap-5">
           {renderPhotoCollage(getRevealClass(2, "up"))}
           <GreetingBox lang={lang} />
           {renderSocialLinks(getRevealClass(7, "up"))}
