@@ -125,14 +125,13 @@ function Home({ isDarkMode, setIsDarkMode }) {
       direction === "left"
         ? "-translate-x-6"
         : direction === "right"
-        ? "translate-x-6"
-        : "translate-y-6";
+          ? "translate-x-6"
+          : "translate-y-6";
 
-    return `transition-all duration-250 ease-out ${
-      visibleStep >= step
+    return `transition-all duration-250 ease-out ${visibleStep >= step
         ? "opacity-100 translate-x-0 translate-y-0"
         : `opacity-0 ${hiddenOffset}`
-    }`;
+      }`;
   };
 
   // --- REUSABLE BLOCKS TO PREVENT DUPLICATION ---
@@ -580,11 +579,10 @@ function Home({ isDarkMode, setIsDarkMode }) {
               title="Toggle Language"
             >
               <span
-                className={`transition-colors duration-300 ${
-                  lang === "EN"
+                className={`transition-colors duration-300 ${lang === "EN"
                     ? "text-gray-900 dark:text-[#39ff14] font-bold"
                     : "text-gray-400 dark:text-gray-600 font-medium"
-                }`}
+                  }`}
               >
                 EN
               </span>
@@ -592,11 +590,10 @@ function Home({ isDarkMode, setIsDarkMode }) {
                 /
               </span>
               <span
-                className={`transition-colors duration-300 ${
-                  lang === "CN"
+                className={`transition-colors duration-300 ${lang === "CN"
                     ? "text-gray-900 dark:text-[#39ff14] font-bold"
                     : "text-gray-400 dark:text-gray-600 font-medium"
-                }`}
+                  }`}
               >
                 CN
               </span>
