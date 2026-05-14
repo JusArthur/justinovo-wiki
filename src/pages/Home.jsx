@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { blogPosts } from "../data/blogData";
 import { recommendationsData } from "../data/recommedationsData";
+import NavBar from "../components/NavBar";
 
 function Home({ isDarkMode, setIsDarkMode }) {
   const {
@@ -125,14 +126,13 @@ function Home({ isDarkMode, setIsDarkMode }) {
       direction === "left"
         ? "-translate-x-6"
         : direction === "right"
-        ? "translate-x-6"
-        : "translate-y-6";
+          ? "translate-x-6"
+          : "translate-y-6";
 
-    return `transition-all duration-250 ease-out ${
-      visibleStep >= step
-        ? "opacity-100 translate-x-0 translate-y-0"
-        : `opacity-0 ${hiddenOffset}`
-    }`;
+    return `transition-all duration-250 ease-out ${visibleStep >= step
+      ? "opacity-100 translate-x-0 translate-y-0"
+      : `opacity-0 ${hiddenOffset}`
+      }`;
   };
 
   // --- REUSABLE BLOCKS TO PREVENT DUPLICATION ---
@@ -221,21 +221,29 @@ function Home({ isDarkMode, setIsDarkMode }) {
       {/* ---------------- MOBILE VIEW ---------------- */}
       <main
         ref={mobileMainRef}
-        className="md:hidden min-h-screen p-4 flex flex-col items-center gap-5"
+        className="md:hidden min-h-screen flex flex-col"
       >
-        {renderPhotoCollage(getRevealClass(2, "up"))}
-        <GreetingBox lang={lang} />
-        {renderSocialLinks(getRevealClass(7, "up"))}
+        {/* Sticky Navbar - Always visible while scrolling */}
+        <div className="sticky top-0 z-50 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md">
+          <NavBar />
+        </div>
 
-        {/* Mobile Stats/Like Button */}
-        <button className="w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative text-pink-400 dark:text-[#39ff14]">
-          <svg fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
-            <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-          </svg>
-          <span className="absolute -top-2 -right-4 bg-white/80 dark:bg-black/80 backdrop-blur-md text-gray-500 dark:text-[#39ff14] text-[10px] px-1.5 py-0.5 rounded-full border border-white dark:border-[#39ff14]/40">
-            15690
-          </span>
-        </button>
+        {/* Main Content - Enough padding so nothing overlaps */}
+        <div className="p-4 pt-24 flex flex-col items-center gap-5">
+          {renderPhotoCollage(getRevealClass(2, "up"))}
+          <GreetingBox lang={lang} />
+          {renderSocialLinks(getRevealClass(7, "up"))}
+
+          {/* Mobile Stats/Like Button */}
+          <button className="w-12 h-12 rounded-full glass-card hover-pop flex items-center justify-center shadow-sm relative text-pink-400 dark:text-[#39ff14]">
+            <svg fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
+              <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+            </svg>
+            <span className="absolute -top-2 -right-4 bg-white/80 dark:bg-black/80 backdrop-blur-md text-gray-500 dark:text-[#39ff14] text-[10px] px-1.5 py-0.5 rounded-full border border-white dark:border-[#39ff14]/40">
+              15690
+            </span>
+          </button>
+        </div>
       </main>
 
       {/* ---------------- DESKTOP VIEW ---------------- */}
@@ -580,11 +588,10 @@ function Home({ isDarkMode, setIsDarkMode }) {
               title="Toggle Language"
             >
               <span
-                className={`transition-colors duration-300 ${
-                  lang === "EN"
-                    ? "text-gray-900 dark:text-[#39ff14] font-bold"
-                    : "text-gray-400 dark:text-gray-600 font-medium"
-                }`}
+                className={`transition-colors duration-300 ${lang === "EN"
+                  ? "text-gray-900 dark:text-[#39ff14] font-bold"
+                  : "text-gray-400 dark:text-gray-600 font-medium"
+                  }`}
               >
                 EN
               </span>
@@ -592,11 +599,10 @@ function Home({ isDarkMode, setIsDarkMode }) {
                 /
               </span>
               <span
-                className={`transition-colors duration-300 ${
-                  lang === "CN"
-                    ? "text-gray-900 dark:text-[#39ff14] font-bold"
-                    : "text-gray-400 dark:text-gray-600 font-medium"
-                }`}
+                className={`transition-colors duration-300 ${lang === "CN"
+                  ? "text-gray-900 dark:text-[#39ff14] font-bold"
+                  : "text-gray-400 dark:text-gray-600 font-medium"
+                  }`}
               >
                 CN
               </span>

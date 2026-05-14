@@ -14,7 +14,7 @@ const StarshipGameBackground = () => {
 
     let width = window.innerWidth;
     let height = window.innerHeight;
-    
+
     // Mouse tracking with velocity for tilting
     const mouse = { x: width / 2, y: height - 100 };
     let lastMouseX = width / 2;
@@ -77,28 +77,95 @@ const StarshipGameBackground = () => {
       }
     }
 
-    class Enemy {
-      constructor() {
-        this.radius = Math.random() * 12 + 8;
-        this.x = Math.random() * (width - this.radius * 2) + this.radius;
-        this.y = -this.radius;
-        this.speed = Math.random() * 2 + 1;
-        this.color = `hsl(${Math.random() * 50 + 340}, 80%, 60%)`;
-      }
-      update() { this.y += this.speed; }
-      draw() {
-        ctx.fillStyle = this.color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = this.color;
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y + this.radius);
-        ctx.lineTo(this.x - this.radius, this.y - this.radius);
-        ctx.lineTo(this.x + this.radius, this.y - this.radius);
-        ctx.closePath();
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-    }
+class Enemy {
+  constructor() {
+    this.radius = Math.random() * 11 + 9;           // 9–20
+    this.x = Math.random() * (width - this.radius * 2) + this.radius;
+    this.y = -this.radius * 2;
+    this.speed = Math.random() * 2.2 + 1.1;
+    
+    // Dangerous red/magenta color family
+    this.hue = Math.random() * 40 + 340;            // 340–380
+    this.color = `hsl(${this.hue}, 85%, 62%)`;
+    this.coreColor = `hsl(${this.hue}, 100%, 75%)`;
+
+    // For pulsing animation
+    this.phase = Math.random() * Math.PI * 2;
+  }
+
+  update() {
+    this.y += this.speed;
+    this.phase += 0.08; // Controls pulse speed
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+
+    const pulse = Math.sin(this.phase) * 0.15 + 1; // 0.85 → 1.15
+
+    // ========== OUTER GLOW ==========
+    ctx.shadowBlur = 16;
+    ctx.shadowColor = this.color;
+    ctx.fillStyle = this.color;
+
+    // Main body (sleek pointed shape)
+    ctx.beginPath();
+    ctx.moveTo(0, this.radius * 1.1);                    // Bottom point
+    ctx.lineTo(-this.radius * 0.65, -this.radius * 0.5);
+    ctx.lineTo(0, -this.radius * 1.0);                   // Top point
+    ctx.lineTo(this.radius * 0.65, -this.radius * 0.5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Small rear wings / stabilizers
+    ctx.fillStyle = `hsl(${this.hue}, 70%, 45%)`;
+    ctx.beginPath();
+    ctx.moveTo(-this.radius * 0.9, this.radius * 0.3);
+    ctx.lineTo(-this.radius * 0.35, -this.radius * 0.15);
+    ctx.lineTo(-this.radius * 0.15, this.radius * 0.5);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(this.radius * 0.9, this.radius * 0.3);
+    ctx.lineTo(this.radius * 0.35, -this.radius * 0.15);
+    ctx.lineTo(this.radius * 0.15, this.radius * 0.5);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+    // ========== INNER GLOWING CORE ==========
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = this.coreColor;
+    ctx.fillStyle = this.coreColor;
+
+    ctx.beginPath();
+    ctx.ellipse(
+      0, 
+      -this.radius * 0.15, 
+      this.radius * 0.28 * pulse, 
+      this.radius * 0.38 * pulse, 
+      0, 0, Math.PI * 2
+    );
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+    // Subtle highlight on core
+    ctx.fillStyle = "rgba(255,255,255,0.6)";
+    ctx.beginPath();
+    ctx.ellipse(
+      -this.radius * 0.08, 
+      -this.radius * 0.25, 
+      this.radius * 0.12, 
+      this.radius * 0.18, 
+      0, 0, Math.PI * 2
+    );
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
 
     class Particle {
       constructor(x, y, color) {
@@ -131,48 +198,199 @@ const StarshipGameBackground = () => {
       ctx.translate(x, y);
       ctx.rotate(tiltAngle);
 
-      // 1. Engine Flame (Flickering)
-      const flameHeight = 15 + Math.random() * 10;
-      const gradient = ctx.createLinearGradient(0, 0, 0, flameHeight);
-      gradient.addColorStop(0, "#00f2ff");
-      gradient.addColorStop(1, "transparent");
-      
-      ctx.fillStyle = gradient;
+      const size = PLAYER_SIZE || 22; // Recommended: 20–25 for best detail
+
+      // ============================================
+      // 1. ENGINE FLAMES (Layered & Multi-Thruster)
+      // ============================================
+      const flameBaseY = 14;
+      const mainFlameHeight = 16 + Math.random() * 11;
+      const sideFlameHeight = 10 + Math.random() * 8;
+
+      // Outer cyan glow (main engine)
+      ctx.shadowBlur = 18;
+      ctx.shadowColor = "#00f2ff";
+      ctx.fillStyle = "rgba(0, 242, 255, 0.35)";
       ctx.beginPath();
-      ctx.moveTo(-5, 15);
-      ctx.lineTo(0, 15 + flameHeight);
-      ctx.lineTo(5, 15);
+      ctx.moveTo(-6, flameBaseY);
+      ctx.quadraticCurveTo(0, flameBaseY + mainFlameHeight * 0.6, 0, flameBaseY + mainFlameHeight);
+      ctx.quadraticCurveTo(0, flameBaseY + mainFlameHeight * 0.6, 6, flameBaseY);
       ctx.fill();
 
-      // 2. Ship Wings (Back layer)
-      ctx.fillStyle = "#006655";
+      // Bright core flame
+      const coreGradient = ctx.createLinearGradient(0, flameBaseY, 0, flameBaseY + mainFlameHeight);
+      coreGradient.addColorStop(0, "#ffffff");
+      coreGradient.addColorStop(0.3, "#00f2ff");
+      coreGradient.addColorStop(1, "transparent");
+
+      ctx.fillStyle = coreGradient;
       ctx.beginPath();
-      ctx.moveTo(-PLAYER_SIZE, 15);
-      ctx.lineTo(0, -5);
-      ctx.lineTo(PLAYER_SIZE, 15);
+      ctx.moveTo(-3.5, flameBaseY);
+      ctx.quadraticCurveTo(0, flameBaseY + mainFlameHeight * 0.55, 0, flameBaseY + mainFlameHeight);
+      ctx.quadraticCurveTo(0, flameBaseY + mainFlameHeight * 0.55, 3.5, flameBaseY);
+      ctx.fill();
+
+      // Left side thruster flame
+      ctx.fillStyle = "rgba(0, 242, 255, 0.6)";
+      ctx.beginPath();
+      ctx.moveTo(-12, flameBaseY + 2);
+      ctx.lineTo(-9, flameBaseY + sideFlameHeight + 4);
+      ctx.lineTo(-6, flameBaseY + 2);
+      ctx.fill();
+
+      // Right side thruster flame
+      ctx.beginPath();
+      ctx.moveTo(12, flameBaseY + 2);
+      ctx.lineTo(9, flameBaseY + sideFlameHeight + 4);
+      ctx.lineTo(6, flameBaseY + 2);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+
+      // ============================================
+      // 2. REAR WINGS (Detailed & Layered)
+      // ============================================
+      // Back wing layer (darker base)
+      ctx.fillStyle = "#003322";
+      ctx.beginPath();
+      ctx.moveTo(-size * 1.1, 12);
+      ctx.lineTo(-size * 0.35, -2);
+      ctx.lineTo(0, 8);
+      ctx.lineTo(size * 0.35, -2);
+      ctx.lineTo(size * 1.1, 12);
+      ctx.lineTo(0, 6);
+      ctx.fill();
+
+      // Wing inner highlight / bevel
+      ctx.fillStyle = "#00aa77";
+      ctx.beginPath();
+      ctx.moveTo(-size * 0.9, 10);
+      ctx.lineTo(-size * 0.3, 0);
+      ctx.lineTo(0, 7);
+      ctx.lineTo(size * 0.3, 0);
+      ctx.lineTo(size * 0.9, 10);
       ctx.lineTo(0, 5);
       ctx.fill();
 
-      // 3. Main Hull (Center)
+      // Wing edge glow lines
+      ctx.strokeStyle = "#00f2ff";
+      ctx.lineWidth = 1.5;
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = "#00f2ff";
+
+      ctx.beginPath();
+      ctx.moveTo(-size * 1.05, 11);
+      ctx.lineTo(-size * 0.32, -1);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(size * 1.05, 11);
+      ctx.lineTo(size * 0.32, -1);
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+      ctx.lineWidth = 1;
+
+      // ============================================
+      // 3. MAIN HULL (Sleek Premium Fuselage)
+      // ============================================
+      // Base dark metallic hull
+      ctx.fillStyle = "#0a1f18";
+      ctx.beginPath();
+      ctx.moveTo(0, -size);
+      ctx.quadraticCurveTo(-size * 0.55, -size * 0.3, -10, 9);
+      ctx.lineTo(10, 9);
+      ctx.quadraticCurveTo(size * 0.55, -size * 0.3, 0, -size);
+      ctx.fill();
+
+      // Bright neon green main body with strong glow
+      ctx.shadowBlur = 14;
+      ctx.shadowColor = "#00ff9d";
       ctx.fillStyle = "#00ff6a";
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = "#00ff6a";
       ctx.beginPath();
-      ctx.moveTo(0, -PLAYER_SIZE);
-      ctx.lineTo(-10, 10);
-      ctx.lineTo(0, 5);
-      ctx.lineTo(10, 10);
-      ctx.closePath();
+      ctx.moveTo(0, -size + 2);
+      ctx.quadraticCurveTo(-8, -2, -7, 8);
+      ctx.lineTo(7, 8);
+      ctx.quadraticCurveTo(8, -2, 0, -size + 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Subtle panel lines (premium detail)
+      ctx.strokeStyle = "rgba(0, 255, 106, 0.35)";
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(-5, -size * 0.6);
+      ctx.lineTo(-4, 6);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(5, -size * 0.6);
+      ctx.lineTo(4, 6);
+      ctx.stroke();
+
+      // Energy accent line (center)
+      ctx.strokeStyle = "#00f2ff";
+      ctx.lineWidth = 1.2;
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = "#00f2ff";
+      ctx.beginPath();
+      ctx.moveTo(0, -size * 0.85);
+      ctx.lineTo(0, 7);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.lineWidth = 1;
+
+      // ============================================
+      // 4. COCKPIT (Glass with Depth)
+      // ============================================
+      // Cockpit base shadow
+      ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
+      ctx.beginPath();
+      ctx.ellipse(0, -4, 5, 7, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // 4. Cockpit (Detail)
+      // Glass cockpit
+      const cockpitGradient = ctx.createLinearGradient(0, -10, 0, 2);
+      cockpitGradient.addColorStop(0, "rgba(180, 240, 255, 0.9)");
+      cockpitGradient.addColorStop(0.5, "rgba(100, 200, 255, 0.6)");
+      cockpitGradient.addColorStop(1, "rgba(0, 150, 200, 0.3)");
+
+      ctx.fillStyle = cockpitGradient;
+      ctx.beginPath();
+      ctx.ellipse(0, -4, 4.5, 6.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cockpit highlight / reflection
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(-1, -5.5, 2.5, 3.5, -0.4, 0, Math.PI * 1.6);
+      ctx.stroke();
+
+      ctx.lineWidth = 1;
+
+      // ============================================
+      // 5. NOSE & FRONT ACCENTS
+      // ============================================
+      // Sharp nose detail
+      ctx.fillStyle = "#00ff9d";
+      ctx.beginPath();
+      ctx.moveTo(0, -size);
+      ctx.lineTo(-3, -size * 0.55);
+      ctx.lineTo(3, -size * 0.55);
+      ctx.fill();
+
+      // Small front sensor lights
       ctx.fillStyle = "#ffffff";
       ctx.beginPath();
-      ctx.ellipse(0, -5, 3, 6, 0, 0, Math.PI * 2);
+      ctx.arc(-4, -size * 0.35, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(4, -size * 0.35, 1.2, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.restore();
-      ctx.shadowBlur = 0;
     };
 
     // --- Initialization & Loop ---
@@ -184,7 +402,7 @@ const StarshipGameBackground = () => {
     };
 
     const animate = (timestamp) => {
-      ctx.fillStyle = "rgba(6, 8, 12, 0.4)"; 
+      ctx.fillStyle = "rgba(6, 8, 12, 0.4)";
       ctx.fillRect(0, 0, width, height);
 
       stars.forEach(star => { star.update(); star.draw(); });
@@ -214,11 +432,11 @@ const StarshipGameBackground = () => {
 
       enemies.forEach((en, ei) => {
         en.update(); en.draw();
-        
+
         // Hit detection
         bullets.forEach((b, bi) => {
           if (Math.hypot(b.x - en.x, b.y - en.y) < en.radius + 5) {
-            for(let i=0; i<10; i++) particles.push(new Particle(en.x, en.y, en.color));
+            for (let i = 0; i < 10; i++) particles.push(new Particle(en.x, en.y, en.color));
             enemies.splice(ei, 1);
             bullets.splice(bi, 1);
             score += 10;
@@ -236,7 +454,7 @@ const StarshipGameBackground = () => {
       ctx.fillStyle = "white";
       ctx.font = "bold 18px monospace";
       ctx.fillText(`SCORE: ${score}`, 30, 40);
-      
+
       animationFrameId = requestAnimationFrame(animate);
     };
 
@@ -261,7 +479,7 @@ const StarshipGameBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full pointer-events-none" 
+      className="fixed top-0 left-0 w-full h-full pointer-events-none"
       style={{ zIndex: 0, background: "#06080c" }}
     />
   );

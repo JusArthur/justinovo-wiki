@@ -55,26 +55,9 @@ export default function ProjectsPage({ lang = "EN" }) {
               style={{ transitionDelay: `${index * 50}ms` }}
             >
               <div className="flex items-start gap-4">
-                {/* Updated Image/Fancy Font Container */}
+                {/* Image / Fancy Title Container (64x64) */}
                 <div className="h-16 w-16 rounded-xl bg-white/40 dark:bg-black/40 overflow-hidden border border-white/60 dark:border-[#39ff14]/20 shadow-sm flex items-center justify-center">
-                  {project.image ? (
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="h-full w-full object-cover dark:brightness-90"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center px-2 text-center">
-                      <span
-                        className="font-greeting-en text-[13px] leading-tight font-medium italic text-[#35bfab] dark:text-[#39ff14] select-none break-words"
-                        style={{
-                          fontSize: project.title.length > 14 ? "10px" : "13px",
-                        }}
-                      >
-                        {project.title}
-                      </span>
-                    </div>
-                  )}
+                  <ImageOrTitle project={project} />
                 </div>
 
                 <div className="flex-1">
@@ -129,5 +112,35 @@ export default function ProjectsPage({ lang = "EN" }) {
         </div>
       </div>
     </main>
+  );
+}
+
+// === Small helper component for image fallback ===
+function ImageOrTitle({ project }) {
+  const [imgError, setImgError] = useState(false);
+
+  if (!project.image || imgError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center px-1.5 text-center">
+        <span
+          className="font-greeting-en leading-none font-medium italic text-[#35bfab] dark:text-[#39ff14] select-none break-words"
+          style={{
+            fontSize: project.title.length > 14 ? "9.5px" : "12.5px",
+            textShadow: "0 0 6px rgba(57, 255, 20, 0.25)",
+          }}
+        >
+          {project.title}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={project.image}
+      alt={project.title}
+      className="h-full w-full object-cover dark:brightness-90"
+      onError={() => setImgError(true)}
+    />
   );
 }
