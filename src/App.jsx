@@ -31,17 +31,7 @@ function App() {
     <>
       {isDarkMode && <StarshipGameBackground />}
 
-      {location.pathname !== "/" && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.2 }}
-          className="fixed top-6 left-6 z-50"
-          style={{ willChange: "transform, opacity" }}
-        >
-          <NavBar lang="EN" />
-        </motion.div>
-      )}
+      {location.pathname !== "/" && <NavBar lang="EN" />}
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
